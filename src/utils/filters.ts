@@ -1,9 +1,19 @@
 import { ModelNameEnum } from 'models/types';
 
 export const routeFilters = {
-  SalesItems: { for: ['in', ['Sales', 'Both']] },
-  PurchaseItems: { for: ['in', ['Purchases', 'Both']] },
-  Items: { for: 'Both' },
+  JewelryItems: { metalType: ['in', ['Gold', 'Silver', 'Diamond']] },
+  SalesItems: {
+    for: ['in', ['Sales', 'Both']],
+    metalType: ['in', ['Gold', 'Silver', 'Diamond']],
+  },
+  PurchaseItems: {
+    for: ['in', ['Purchases', 'Both']],
+    metalType: ['in', ['Gold', 'Silver', 'Diamond']],
+  },
+  Items: {
+    for: 'Both',
+    metalType: ['in', ['Gold', 'Silver', 'Diamond']],
+  },
   PurchasePayments: {
     referenceType: ModelNameEnum.PurchaseInvoice,
   },
@@ -16,9 +26,9 @@ export const routeFilters = {
 };
 
 export const createFilters = {
-  SalesItems: { for: 'Sales' },
-  PurchaseItems: { for: 'Purchases' },
-  Items: { for: 'Both' },
+  SalesItems: { for: 'Sales', metalType: 'Gold' },
+  PurchaseItems: { for: 'Purchases', metalType: 'Gold' },
+  Items: { for: 'Both', metalType: 'Gold' },
   PurchasePayments: { paymentType: 'Pay' },
   SalesPayments: { paymentType: 'Receive' },
   Suppliers: { role: 'Supplier' },

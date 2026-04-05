@@ -68,18 +68,21 @@ export function getGetStartedConfig(): GetStartedConfigItem[] {
       ],
     },
     {
-      label: t`Sales`,
+      label: t`Jewelry Sales`,
       items: [
         {
-          key: 'Add Sales Items',
-          label: t`Add Items`,
+          key: 'Add Jewelry Sales Items',
+          label: t`Add Jewelry Items`,
           icon: 'item',
-          description: t`Add products or services that you sell to your customers`,
+          description: t`Add jewelry products you sell to your customers`,
           action: () =>
             routeTo({
-              path: `/list/Item/${t`Sales Items`}`,
+              path: `/list/Item/${t`Jewelry Sales Items`}`,
               query: {
-                filters: JSON.stringify({ for: 'Sales' }),
+                filters: JSON.stringify({
+                  for: 'Sales',
+                  metalType: ['in', ['Gold', 'Silver', 'Diamond']],
+                }),
               },
             }),
           fieldname: 'salesItemCreated',
@@ -90,7 +93,7 @@ export function getGetStartedConfig(): GetStartedConfigItem[] {
           key: 'Add Customers',
           label: t`Add Customers`,
           icon: 'customer',
-          description: t`Add a few customers to create your first sales invoice`,
+          description: t`Add customers to create your first jewelry invoice`,
           action: () =>
             routeTo({
               path: `/list/Party/${t`Customers`}`,
@@ -104,9 +107,9 @@ export function getGetStartedConfig(): GetStartedConfigItem[] {
         },
         {
           key: 'Create Sales Invoice',
-          label: t`Create Sales Invoice`,
+          label: t`Create Jewelry Invoice`,
           icon: 'sales-invoice',
-          description: t`Create your first sales invoice for the created customer`,
+          description: t`Create your first jewelry sales invoice`,
           action: () => routeTo('/list/SalesInvoice'),
           fieldname: 'invoiceCreated',
           documentation: 'https://docs.frappe.io/books/sales-invoices',
@@ -114,18 +117,21 @@ export function getGetStartedConfig(): GetStartedConfigItem[] {
       ],
     },
     {
-      label: t`Purchase`,
+      label: t`Jewelry Purchases`,
       items: [
         {
-          key: 'Add Purchase Items',
-          label: t`Add Items`,
+          key: 'Add Jewelry Purchase Items',
+          label: t`Add Jewelry Items`,
           icon: 'item',
-          description: t`Add products or services that you buy from your suppliers`,
+          description: t`Add jewelry items that you buy from suppliers`,
           action: () =>
             routeTo({
-              path: `/list/Item/${t`Purchase Items`}`,
+              path: `/list/Item/${t`Jewelry Purchase Items`}`,
               query: {
-                filters: JSON.stringify({ for: 'Purchases' }),
+                filters: JSON.stringify({
+                  for: 'Purchases',
+                  metalType: ['in', ['Gold', 'Silver', 'Diamond']],
+                }),
               },
             }),
           fieldname: 'purchaseItemCreated',
@@ -134,7 +140,7 @@ export function getGetStartedConfig(): GetStartedConfigItem[] {
           key: 'Add Suppliers',
           label: t`Add Suppliers`,
           icon: 'supplier',
-          description: t`Add a few suppliers to create your first purchase invoice`,
+          description: t`Add suppliers/karigars for jewelry procurement`,
           action: () =>
             routeTo({
               path: `/list/Party/${t`Suppliers`}`,
@@ -144,9 +150,9 @@ export function getGetStartedConfig(): GetStartedConfigItem[] {
         },
         {
           key: 'Create Purchase Invoice',
-          label: t`Create Purchase Invoice`,
+          label: t`Create Jewelry Purchase Invoice`,
           icon: 'purchase-invoice',
-          description: t`Create your first purchase invoice from the created supplier`,
+          description: t`Create your first jewelry purchase invoice`,
           action: () => routeTo('/list/PurchaseInvoice'),
           fieldname: 'billCreated',
           documentation:

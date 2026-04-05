@@ -1,0 +1,112 @@
+{
+  "name": "JewelryInvoice",
+  "label": "Jewelry Invoice",
+  "isSingle": false,
+  "isSubmittable": true,
+  "naming": "numberSeries",
+  "fields": [
+    {
+      "fieldname": "numberSeries",
+      "label": "Number Series",
+      "fieldtype": "Link",
+      "target": "NumberSeries",
+      "create": true,
+      "required": true,
+      "default": "JINV-",
+      "section": "Default"
+    },
+    {
+      "fieldname": "party",
+      "label": "Customer",
+      "fieldtype": "Link",
+      "target": "Party",
+      "create": true,
+      "required": true,
+      "section": "Default"
+    },
+    {
+      "fieldname": "date",
+      "label": "Date",
+      "fieldtype": "Datetime",
+      "required": true,
+      "section": "Default"
+    },
+    {
+      "fieldname": "items",
+      "label": "Items",
+      "fieldtype": "Table",
+      "target": "JewelryInvoiceItem",
+      "required": true,
+      "section": "Items"
+    },
+    {
+      "fieldname": "oldGoldWeight",
+      "label": "Old Gold Exchange (g)",
+      "fieldtype": "Float",
+      "section": "Exchange"
+    },
+    {
+      "fieldname": "oldGoldExchangeAmount",
+      "label": "Old Gold Exchange Amount",
+      "fieldtype": "Currency",
+      "section": "Exchange"
+    },
+    {
+      "fieldname": "karigar",
+      "label": "Karigar",
+      "fieldtype": "Link",
+      "target": "Party",
+      "section": "Labour"
+    },
+    {
+      "fieldname": "karigarCharges",
+      "label": "Karigar Charges",
+      "fieldtype": "Currency",
+      "section": "Labour"
+    },
+    {
+      "fieldname": "repairOrderRef",
+      "label": "Repair Order Ref",
+      "fieldtype": "Data",
+      "section": "Labour"
+    },
+    {
+      "fieldname": "subtotal",
+      "label": "Subtotal",
+      "fieldtype": "Currency",
+      "readOnly": true,
+      "section": "Tax and Totals"
+    },
+    {
+      "fieldname": "gstAmount",
+      "label": "GST Amount",
+      "fieldtype": "Currency",
+      "readOnly": true,
+      "section": "Tax and Totals"
+    },
+    {
+      "fieldname": "grandTotal",
+      "label": "Grand Total",
+      "fieldtype": "Currency",
+      "readOnly": true,
+      "section": "Tax and Totals"
+    },
+    {
+      "fieldname": "profitAmount",
+      "label": "Profit Amount",
+      "fieldtype": "Currency",
+      "readOnly": true,
+      "section": "Tax and Totals"
+    }
+  ],
+  "quickEditFields": [
+    "party",
+    "date",
+    "oldGoldWeight",
+    "oldGoldExchangeAmount",
+    "karigar",
+    "karigarCharges",
+    "repairOrderRef"
+  ],
+  "keywordFields": ["name", "party", "repairOrderRef"]
+}

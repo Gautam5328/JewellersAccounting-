@@ -39,11 +39,17 @@ export abstract class BaseGSTR extends Report {
   }
 
   get schemaName() {
+    // Backward compatible single-schema accessor.
+    // GSTR-1 supports both SalesInvoice and JewelryInvoice.
+    return this.getSchemaNames()[0];
+  }
+
+  getSchemaNames(): string[] {
     if (this.gstrType === 'GSTR-1') {
-      return ModelNameEnum.SalesInvoice;
+      return [ModelNameEnum.SalesInvoice, ModelNameEnum.JewelryInvoice];
     }
 
-    return ModelNameEnum.PurchaseInvoice;
+    return [ModelNameEnum.PurchaseInvoice];
   }
 
   async setReportData(): Promise<void> {
@@ -124,32 +130,39 @@ export abstract class BaseGSTR extends Report {
       date.push('>=', this.fromDate);
     }
 
-    return (await this.fyo.db.getAllRaw(this.schemaName, {
-      filters: { date, submitted: true, cancelled: false },
-    })) as { name: string }[];
+    const schemaNames = this.getSchemaNames();
+    const results: { name: string; schemaName: string }[] = [];
+    for (const schemaName of schemaNames) {
+      const rows = (await this.fyo.db.getAllRaw(schemaName, {
+        filters: { date, submitted: true, cancelled: false },
+      })) as { name: string }[];
+      results.push(...rows.map((r) => ({ name: r.name, schemaName })));
+    }
+    return results;
   }
 
   async getGstrRows(): Promise<GSTRRow[]> {
     const entries = await this.getEntries();
     const gstrRows: GSTRRow[] = [];
     for (const entry of entries) {
-      const gstrRow = await this.getGstrRow(entry.name);
+      const gstrRow = await this.getGstrRow(entry.schemaName, entry.name);
       gstrRows.push(gstrRow);
     }
     return gstrRows;
   }
 
-  async getGstrRow(entryName: string): Promise<GSTRRow> {
+  async getGstrRow(schemaName: string, entryName: string): Promise<GSTRRow> {
     const entry = (await this.fyo.doc.getDoc(
-      this.schemaName,
+      schemaName,
       entryName
-    )) as Invoice;
+    )) as unknown as Invoice;
     const gstin = (await this.fyo.getValue(
       ModelNameEnum.AccountingSettings,
       'gstin'
     )) as string | null;
 
-    const party = (await this.fyo.doc.getDoc('Party', entry.party)) as Party;
+    const partyName = (entry as any).party as string;
+    const party = (await this.fyo.doc.getDoc('Party', partyName)) as Party;
 
     let place = '';
     if (party.address) {
@@ -170,24 +183,47 @@ export abstract class BaseGSTR extends Report {
       inState = codeStateMap[gstin.slice(0, 2)] === place;
     }
 
+    const isJewelryInvoice = schemaName === ModelNameEnum.JewelryInvoice;
+    const invAmt = isJewelryInvoice
+      ? ((entry as any).grandTotal?.float ?? 0)
+      : (entry.grandTotal?.float ?? 0);
+    const taxVal = isJewelryInvoice
+      ? ((entry as any).subtotal?.float ?? 0)
+      : (entry.netTotal?.float ?? 0);
+    const gstAmount = isJewelryInvoice
+      ? ((entry as any).gstAmount?.float ?? 0)
+      : 0;
+    const effectiveRate =
+      taxVal > 0 ? Number(((gstAmount / taxVal) * 100).toFixed(2)) : 0;
+
     const gstrRow: GSTRRow = {
       gstin: party.gstin ?? '',
-      partyName: entry.party!,
+      partyName,
       invNo: entry.name!,
       invDate: entry.date!,
       rate: 0,
       reverseCharge: !party.gstin ? 'Y' : 'N',
       inState,
       place,
-      invAmt: entry.grandTotal?.float ?? 0,
-      taxVal: entry.netTotal?.float ?? 0,
+      invAmt,
+      taxVal,
     };
 
-    for (const tax of entry.taxes ?? []) {
-      gstrRow.rate += tax.rate ?? 0;
-    }
+    if (isJewelryInvoice) {
+      gstrRow.rate = effectiveRate;
+      if (inState) {
+        gstrRow.cgstAmt = gstAmount / 2;
+        gstrRow.sgstAmt = gstAmount / 2;
+      } else {
+        gstrRow.igstAmt = gstAmount;
+      }
+    } else {
+      for (const tax of entry.taxes ?? []) {
+        gstrRow.rate += tax.rate ?? 0;
+      }
 
-    this.setTaxValuesOnGSTRRow(entry, gstrRow);
+      this.setTaxValuesOnGSTRRow(entry, gstrRow);
+    }
     return gstrRow;
   }
 

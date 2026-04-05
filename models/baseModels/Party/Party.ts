@@ -230,6 +230,38 @@ export class Party extends Doc {
         },
       },
       {
+        label: fyo.t`Create Jewelry Sale`,
+        condition: (doc: Doc) =>
+          !doc.notInserted && (doc.role as PartyRole) !== 'Supplier',
+        action: async (partyDoc, router) => {
+          const doc = fyo.doc.getNewDoc(ModelNameEnum.JewelryInvoice, {
+            party: partyDoc.name,
+          });
+
+          await router.push({
+            path: `/edit/${ModelNameEnum.JewelryInvoice}/${doc.name!}`,
+            query: {
+              schemaName: ModelNameEnum.JewelryInvoice,
+              values: {
+                // @ts-ignore
+                party: partyDoc.name!,
+              },
+            },
+          });
+        },
+      },
+      {
+        label: fyo.t`View Jewelry Sales`,
+        condition: (doc: Doc) =>
+          !doc.notInserted && (doc.role as PartyRole) !== 'Supplier',
+        action: async (partyDoc, router) => {
+          await router.push({
+            path: `/list/${ModelNameEnum.JewelryInvoice}`,
+            query: { filters: JSON.stringify({ party: partyDoc.name }) },
+          });
+        },
+      },
+      {
         label: fyo.t`Create Sale`,
         condition: (doc: Doc) =>
           !doc.notInserted && (doc.role as PartyRole) !== 'Supplier',

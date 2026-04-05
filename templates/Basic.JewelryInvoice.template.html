@@ -1,0 +1,112 @@
+<main class="bg-white h-full px-6" :style="{ 'font-family': print.font }">
+  <header class="py-6 flex text-sm text-gray-900 border-b">
+    <section class="w-1/3">
+      <img
+        v-if="print.displayLogo"
+        class="h-12 max-w-32 object-contain"
+        :src="print.logo"
+      />
+      <div class="text-xl text-gray-700 font-semibold" v-else>
+        {{ print.companyName }}
+      </div>
+    </section>
+    <section class="w-1/3">
+      <div>{{ print.email }}</div>
+      <div class="mt-1">{{ print.phone }}</div>
+    </section>
+    <section class="w-1/3">
+      <div v-if="print.address">{{ print.links.address.addressDisplay }}</div>
+      <div v-if="print.gstin">GSTIN: {{ print.gstin }}</div>
+    </section>
+  </header>
+
+  <section class="mt-8 flex justify-between">
+    <section class="w-1/3">
+      <h2 class="text-2xl font-semibold">{{ doc.name }}</h2>
+      <div class="flex gap-2">
+        <p class="py-2 text-base">{{ doc.date }}</p>
+        <p class="py-2 text-base">{{ doc?.time }}</p>
+      </div>
+    </section>
+
+    <section class="w-1/3" v-if="doc.party">
+      <h2 class="py-1 text-right text-lg font-semibold">{{ doc.party }}</h2>
+      <p
+        v-if="doc.links.party.address"
+        class="mt-1 text-xs text-gray-600 text-right"
+      >
+        {{ doc.links.party.links.address.addressDisplay }}
+      </p>
+      <p
+        v-if="doc.links.party.gstin"
+        class="mt-1 text-xs text-gray-600 text-right"
+      >
+        GSTIN: {{ doc.links.party.gstin }}
+      </p>
+    </section>
+  </section>
+
+  <section class="mt-8 text-base">
+    <section class="text-gray-600 w-full flex border-b">
+      <div class="py-4 w-4/12">{{ t`Item` }}</div>
+      <div class="py-4 w-2/12">{{ t`Metal` }}</div>
+      <div class="py-4 w-2/12">{{ t`Purity` }}</div>
+      <div class="py-4 text-right w-2/12">{{ t`Wt/Ct` }}</div>
+      <div class="py-4 text-right w-2/12">{{ t`Making` }}</div>
+      <div class="py-4 text-right w-2/12">{{ t`Amount` }}</div>
+    </section>
+
+    <section
+      class="flex py-1 text-gray-900 w-full border-b"
+      v-for="row in doc.items"
+      :key="row.name"
+    >
+      <div class="w-4/12 py-4">{{ row.item }}</div>
+      <div class="w-2/12 py-4">{{ row.metalType }}</div>
+      <div class="w-2/12 py-4">{{ row.purity }}</div>
+      <div class="w-2/12 text-right py-4">
+        <span v-if="row.metalType === 'Diamond'">{{ row.carat }}</span>
+        <span v-else>{{ row.netWeight }}</span>
+      </div>
+      <div class="w-2/12 text-right py-4">{{ row.makingCharges }}</div>
+      <div class="w-2/12 text-right py-4">{{ row.totalAmount }}</div>
+    </section>
+  </section>
+
+  <footer class="mt-8 flex justify-end text-base">
+    <section class="w-1/2"></section>
+
+    <section class="w-1/2">
+      <div class="flex pl-2 justify-between py-3 border-b">
+        <h3>{{ t`Subtotal` }}</h3>
+        <p>{{ doc.subtotal }}</p>
+      </div>
+
+      <div class="flex pl-2 justify-between py-3 border-b">
+        <h3>{{ t`GST` }}</h3>
+        <p>{{ doc.gstAmount }}</p>
+      </div>
+
+      <div class="flex pl-2 justify-between py-3 border-b" v-if="doc.oldGoldExchangeAmount">
+        <h3>{{ t`Old Gold Exchange` }}</h3>
+        <p>- {{ doc.oldGoldExchangeAmount }}</p>
+      </div>
+
+      <div
+        class="
+          flex
+          pl-2
+          justify-between
+          py-3
+          border-t
+          text-green-600
+          font-semibold
+          text-base
+        "
+      >
+        <h3>{{ t`Grand Total` }}</h3>
+        <p>{{ doc.grandTotal }}</p>
+      </div>
+    </section>
+  </footer>
+</main>

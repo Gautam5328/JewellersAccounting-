@@ -166,9 +166,9 @@ export default defineComponent({
     },
     actionOptions(): { value: string; label: string }[] {
       return [
-        { value: 'SalesQuote', label: 'Sales Quote' },
-        { value: 'SalesInvoice', label: 'Sales Invoice' },
-        { value: 'PurchaseInvoice', label: 'Purchase Invoice' },
+        { value: 'JewelryInvoice', label: 'Jewelry Invoice' },
+        { value: 'SalesInvoice', label: 'Jewelry Sales Invoice' },
+        { value: 'PurchaseInvoice', label: 'Jewelry Purchase Invoice' },
       ];
     },
   },
@@ -236,6 +236,7 @@ export default defineComponent({
     },
     async createInvoice(value: string) {
       if (
+        value === ModelNameEnum.JewelryInvoice ||
         value === ModelNameEnum.SalesQuote ||
         value === ModelNameEnum.SalesInvoice ||
         value === ModelNameEnum.PurchaseInvoice

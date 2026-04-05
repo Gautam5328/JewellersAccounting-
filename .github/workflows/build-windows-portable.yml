@@ -1,0 +1,41 @@
+name: Build Windows (Artifact)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.18.1'
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set yarn version
+        run: yarn set version 1.22.18
+
+      - name: Install Dependencies
+        run: yarn
+
+      - name: Build (no publish, no signing)
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+        run: yarn build --win --publish never
+
+      - name: Archive dist
+        run: tar -cvf dist-windows.tar dist_electron
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-windows
+          path: dist-windows.tar
+

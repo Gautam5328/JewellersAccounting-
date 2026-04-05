@@ -312,6 +312,12 @@ export default defineComponent({
         return false;
       }
 
+      // For Jewelry invoices, always allow Print View so users can create/choose templates
+      // and export PDF even if templates aren't loaded yet.
+      if (this.doc.schemaName === ModelNameEnum.JewelryInvoice && this.doc.inserted) {
+        return !this.doc.isCancelled;
+      }
+
       return !this.doc.isCancelled && !this.doc.dirty && this.isPrintable;
     },
     canShowLinks(): boolean {

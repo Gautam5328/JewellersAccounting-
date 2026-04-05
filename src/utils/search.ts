@@ -87,6 +87,8 @@ function getCreateAction(fyo: Fyo, schemaName: string, initData?: RawValueMap) {
 function getCreateList(fyo: Fyo): SearchItem[] {
   const hasInventory = fyo.doc.singles.AccountingSettings?.enableInventory;
   const formEditCreateList = [
+    ModelNameEnum.JewelryInvoice,
+    ModelNameEnum.JewelryItem,
     ModelNameEnum.SalesInvoice,
     ModelNameEnum.PurchaseInvoice,
     ModelNameEnum.JournalEntry,
@@ -134,17 +136,17 @@ function getCreateList(fyo: Fyo): SearchItem[] {
       create: createFilters.Party,
     },
     {
-      label: t`Sales Item`,
+      label: t`Jewelry Sales Item`,
       schemaName: ModelNameEnum.Item,
       create: createFilters.SalesItems,
     },
     {
-      label: t`Purchase Item`,
+      label: t`Jewelry Purchase Item`,
       schemaName: ModelNameEnum.Item,
       create: createFilters.PurchaseItems,
     },
     {
-      label: t`Item`,
+      label: t`Jewelry Item`,
       schemaName: ModelNameEnum.Item,
       create: createFilters.Items,
     },
@@ -249,43 +251,21 @@ function getListViewList(fyo: Fyo): SearchItem[] {
       filters: routeFilters.Customers,
     },
     {
-      label: t`Suppliers`,
-      route: `/list/Party/${t`Suppliers`}`,
-      filters: routeFilters.Suppliers,
-    },
-    {
-      label: t`Party`,
-      route: `/list/Party/${t`Party`}`,
-      filters: routeFilters.Party,
-    },
-    {
-      label: t`Sales Items`,
-      route: `/list/Item/${t`Sales Items`}`,
+      label: t`Catalog`,
+      route: `/list/Item/${t`Catalog`}`,
       filters: routeFilters.SalesItems,
     },
     {
-      label: t`Sales Payments`,
-      route: `/list/Payment/${t`Sales Payments`}`,
-      filters: routeFilters.SalesPayments,
-    },
-    {
-      label: t`Purchase Items`,
-      route: `/list/Item/${t`Purchase Items`}`,
-      filters: routeFilters.PurchaseItems,
-    },
-    {
-      label: t`Items`,
-      route: `/list/Item/${t`Items`}`,
-      filters: routeFilters.Items,
-    },
-    {
-      label: t`Purchase Payments`,
-      route: `/list/Payment/${t`Purchase Payments`}`,
-      filters: routeFilters.PurchasePayments,
+      label: t`Pieces`,
+      route: `/list/JewelryItem/${t`Pieces`}`,
+      filters: {},
     },
   ].map((i) => {
     const label = i.label;
-    const route = encodeURI(`${i.route}?filters=${JSON.stringify(i.filters)}`);
+    const route =
+      i.filters && Object.keys(i.filters).length
+        ? encodeURI(`${i.route}?filters=${JSON.stringify(i.filters)}`)
+        : i.route;
 
     return { label, route, group: 'List' } as SearchItem;
   });
@@ -298,6 +278,26 @@ function getSetupList(): SearchItem[] {
     {
       label: t`Dashboard`,
       route: '/',
+      group: 'Page',
+    },
+    {
+      label: t`Inventory`,
+      route: '/jewelry/inventory',
+      group: 'Page',
+    },
+    {
+      label: t`New Invoice`,
+      route: '/jewelry/invoice',
+      group: 'Page',
+    },
+    {
+      label: t`Rates`,
+      route: '/jewelry/rates',
+      group: 'Page',
+    },
+    {
+      label: t`Reports`,
+      route: '/jewelry/reports',
       group: 'Page',
     },
     {

@@ -59,7 +59,7 @@ import DropdownWithActions from 'src/components/DropdownWithActions.vue';
 import PageHeader from 'src/components/PageHeader.vue';
 import { handleErrorWithDialog } from 'src/errorHandling';
 import { fyo } from 'src/initFyo';
-import { getPrintTemplatePropValues } from 'src/utils/printTemplates';
+import { getPrintTemplatePropValues, updatePrintTemplates } from 'src/utils/printTemplates';
 import { showSidebar } from 'src/utils/refs';
 import { PrintValues } from 'src/utils/types';
 import { getFormRoute, openSettings, routeTo } from 'src/utils/ui';
@@ -248,6 +248,16 @@ export default defineComponent({
       })) as { name: string }[];
 
       this.templateList = list.map(({ name }) => name);
+
+      // If templates weren't loaded yet (new template file added), pull from `/templates`
+      // via IPC and retry.
+      if (!this.templateList.length) {
+        await updatePrintTemplates(this.fyo);
+        const retry = (await this.fyo.db.getAllRaw(ModelNameEnum.PrintTemplate, {
+          filters: { type: this.schemaName },
+        })) as { name: string }[];
+        this.templateList = retry.map(({ name }) => name);
+      }
     },
     async savePDF(shouldPrint?: boolean) {
       const printContainer = this.$refs.printContainer as {

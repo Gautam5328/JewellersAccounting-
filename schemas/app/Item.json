@@ -1,6 +1,6 @@
 {
   "name": "Item",
-  "label": "Item",
+  "label": "Jewelry Item",
   "isSingle": false,
   "naming": "manual",
   "fields": [
@@ -12,7 +12,7 @@
     },
     {
       "fieldname": "name",
-      "label": "Item Name",
+      "label": "Jewelry Item Name",
       "fieldtype": "Data",
       "placeholder": "Item Name",
       "section": "Default",
@@ -180,6 +180,64 @@
       "section": "Inventory"
     },
     {
+      "fieldname": "metalType",
+      "label": "Metal Type",
+      "fieldtype": "Select",
+      "section": "Jewelry",
+      "options": [
+        {
+          "value": "Gold",
+          "label": "Gold"
+        },
+        {
+          "value": "Silver",
+          "label": "Silver"
+        },
+        {
+          "value": "Diamond",
+          "label": "Diamond"
+        }
+      ]
+    },
+    {
+      "fieldname": "purity",
+      "label": "Purity",
+      "fieldtype": "Select",
+      "section": "Jewelry",
+      "options": [
+        {
+          "value": "18K",
+          "label": "18K"
+        },
+        {
+          "value": "22K",
+          "label": "22K"
+        },
+        {
+          "value": "24K",
+          "label": "24K"
+        }
+      ]
+    },
+    {
+      "fieldname": "weight",
+      "label": "Weight (g)",
+      "fieldtype": "Float",
+      "section": "Jewelry"
+    },
+    {
+      "fieldname": "carat",
+      "label": "Carat",
+      "fieldtype": "Float",
+      "section": "Jewelry"
+    },
+    {
+      "fieldname": "makingCharges",
+      "label": "Making Charges",
+      "fieldtype": "Currency",
+      "section": "Jewelry"
+    },
+    {
       "fieldname": "datafromErp",
       "fieldtype": "Check",
       "hidden": true,
@@ -200,7 +258,12 @@
     "barcode",
     "hsnCode",
     "trackItem",
-    "uom"
+    "uom",
+    "metalType",
+    "purity",
+    "weight",
+    "carat",
+    "makingCharges"
   ],
-  "keywordFields": ["name", "itemType", "for"]
+  "keywordFields": ["name", "itemType", "for", "metalType", "purity"]
 }

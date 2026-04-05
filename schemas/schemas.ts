@@ -11,6 +11,7 @@ import GetStarted from './app/GetStarted.json';
 import Invoice from './app/Invoice.json';
 import InvoiceItem from './app/InvoiceItem.json';
 import Item from './app/Item.json';
+import JewelryItem from './app/JewelryItem.json';
 import JournalEntry from './app/JournalEntry.json';
 import JournalEntryAccount from './app/JournalEntryAccount.json';
 import Misc from './app/Misc.json';
@@ -37,6 +38,8 @@ import PurchaseInvoice from './app/PurchaseInvoice.json';
 import PurchaseInvoiceItem from './app/PurchaseInvoiceItem.json';
 import SalesInvoice from './app/SalesInvoice.json';
 import SalesInvoiceItem from './app/SalesInvoiceItem.json';
+import JewelryInvoice from './app/JewelryInvoice.json';
+import JewelryInvoiceItem from './app/JewelryInvoiceItem.json';
 import SalesQuote from './app/SalesQuote.json';
 import SalesQuoteItem from './app/SalesQuoteItem.json';
 import SetupWizard from './app/SetupWizard.json';
@@ -44,6 +47,9 @@ import Tax from './app/Tax.json';
 import TaxDetail from './app/TaxDetail.json';
 import TaxSummary from './app/TaxSummary.json';
 import UOM from './app/UOM.json';
+import GoldRate from './app/GoldRate.json';
+import DiamondRate from './app/DiamondRate.json';
+import JewelryStockLedger from './app/JewelryStockLedger.json';
 import InventorySettings from './app/inventory/InventorySettings.json';
 import Location from './app/inventory/Location.json';
 import PurchaseReceipt from './app/inventory/PurchaseReceipt.json';
@@ -122,6 +128,7 @@ export const appSchemas: Schema[] | SchemaStub[] = [
   Address as Schema,
   ItemGroup as Schema,
   Item as Schema,
+  JewelryItem as Schema,
   UOM as Schema,
   UOMConversionItem as Schema,
 
@@ -139,11 +146,13 @@ export const appSchemas: Schema[] | SchemaStub[] = [
   Invoice as Schema,
   ItemEnquiry as Schema,
   SalesInvoice as Schema,
+  JewelryInvoice as Schema,
   PurchaseInvoice as Schema,
   SalesQuote as Schema,
 
   InvoiceItem as Schema,
   SalesInvoiceItem as SchemaStub,
+  JewelryInvoiceItem as Schema,
   PurchaseInvoiceItem as SchemaStub,
   SalesQuoteItem as SchemaStub,
   CouponCode as Schema,
@@ -159,8 +168,11 @@ export const appSchemas: Schema[] | SchemaStub[] = [
   Tax as Schema,
   TaxDetail as Schema,
   TaxSummary as Schema,
+  GoldRate as Schema,
+  DiamondRate as Schema,
 
   InventorySettings as Schema,
+  JewelryStockLedger as Schema,
   Location as Schema,
   StockLedgerEntry as Schema,
   StockMovement as Schema,

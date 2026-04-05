@@ -1,0 +1,72 @@
+{
+  "name": "GoldRate",
+  "label": "Gold Rate",
+  "isSingle": false,
+  "naming": "autoincrement",
+  "fields": [
+    {
+      "fieldname": "date",
+      "label": "Date",
+      "fieldtype": "Date",
+      "required": true,
+      "section": "Default"
+    },
+    {
+      "fieldname": "purity",
+      "label": "Purity",
+      "fieldtype": "Select",
+      "required": true,
+      "default": "22K",
+      "options": [
+        {
+          "value": "18K",
+          "label": "18K"
+        },
+        {
+          "value": "22K",
+          "label": "22K"
+        },
+        {
+          "value": "24K",
+          "label": "24K"
+        }
+      ],
+      "section": "Default"
+    },
+    {
+      "fieldname": "ratePerGram",
+      "label": "Rate per Gram",
+      "fieldtype": "Currency",
+      "required": true,
+      "section": "Default"
+    },
+    {
+      "fieldname": "purchaseRatePerGram",
+      "label": "Purchase Rate per Gram",
+      "fieldtype": "Currency",
+      "section": "Default"
+    },
+    {
+      "fieldname": "source",
+      "label": "Source",
+      "fieldtype": "Data",
+      "section": "Default"
+    },
+    {
+      "fieldname": "isActive",
+      "label": "Is Active",
+      "fieldtype": "Check",
+      "default": true,
+      "section": "Default"
+    }
+  ],
+  "quickEditFields": [
+    "date",
+    "purity",
+    "ratePerGram",
+    "purchaseRatePerGram",
+    "source",
+    "isActive"
+  ],
+  "keywordFields": ["date", "purity", "source"]
+}

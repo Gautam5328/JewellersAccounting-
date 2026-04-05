@@ -1,0 +1,70 @@
+{
+  "name": "DiamondRate",
+  "label": "Diamond Rate",
+  "isSingle": false,
+  "naming": "autoincrement",
+  "fields": [
+    {
+      "fieldname": "date",
+      "label": "Date",
+      "fieldtype": "Date",
+      "required": true,
+      "section": "Default"
+    },
+    {
+      "fieldname": "cut",
+      "label": "Cut",
+      "fieldtype": "Data",
+      "section": "Default"
+    },
+    {
+      "fieldname": "clarity",
+      "label": "Clarity",
+      "fieldtype": "Data",
+      "section": "Default"
+    },
+    {
+      "fieldname": "color",
+      "label": "Color",
+      "fieldtype": "Data",
+      "section": "Default"
+    },
+    {
+      "fieldname": "caratBand",
+      "label": "Carat Band",
+      "fieldtype": "Data",
+      "section": "Default"
+    },
+    {
+      "fieldname": "ratePerCarat",
+      "label": "Rate per Carat",
+      "fieldtype": "Currency",
+      "required": true,
+      "section": "Default"
+    },
+    {
+      "fieldname": "purchaseRatePerCarat",
+      "label": "Purchase Rate per Carat",
+      "fieldtype": "Currency",
+      "section": "Default"
+    },
+    {
+      "fieldname": "isActive",
+      "label": "Is Active",
+      "fieldtype": "Check",
+      "default": true,
+      "section": "Default"
+    }
+  ],
+  "quickEditFields": [
+    "date",
+    "cut",
+    "clarity",
+    "color",
+    "caratBand",
+    "ratePerCarat",
+    "purchaseRatePerCarat",
+    "isActive"
+  ],
+  "keywordFields": ["date", "cut", "clarity", "color", "caratBand"]
+}

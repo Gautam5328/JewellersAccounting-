@@ -29,6 +29,11 @@ export class Item extends Doc {
   batchSeries?: string;
   itemGroup?: string;
   hsnCode?: number;
+  metalType?: 'Gold' | 'Silver' | 'Diamond';
+  purity?: '18K' | '22K' | '24K';
+  weight?: number;
+  carat?: number;
+  makingCharges?: Money;
   hasSerialNumber?: boolean;
   serialNumberSeries?: string;
   datafromErp?: boolean;
@@ -224,8 +229,11 @@ export class Item extends Doc {
     return [
       {
         group: fyo.t`Create`,
-        label: fyo.t`Sales Invoice`,
-        condition: (doc) => !doc.notInserted && doc.for !== 'Purchases',
+        label: fyo.t`Jewelry Sales Invoice`,
+        condition: (doc) =>
+          !doc.notInserted &&
+          doc.for !== 'Purchases' &&
+          ['Gold', 'Silver', 'Diamond'].includes((doc as Item).metalType ?? ''),
         action: async (doc, router) => {
           const invoice = fyo.doc.getNewDoc('SalesInvoice');
           await invoice.append('items', {
@@ -238,8 +246,11 @@ export class Item extends Doc {
       },
       {
         group: fyo.t`Create`,
-        label: fyo.t`Purchase Invoice`,
-        condition: (doc) => !doc.notInserted && doc.for !== 'Sales',
+        label: fyo.t`Jewelry Purchase Invoice`,
+        condition: (doc) =>
+          !doc.notInserted &&
+          doc.for !== 'Sales' &&
+          ['Gold', 'Silver', 'Diamond'].includes((doc as Item).metalType ?? ''),
         action: async (doc, router) => {
           const invoice = fyo.doc.getNewDoc('PurchaseInvoice');
           await invoice.append('items', {
@@ -255,7 +266,7 @@ export class Item extends Doc {
 
   static getListViewSettings(): ListViewSettings {
     return {
-      columns: ['name', 'unit', 'tax', 'rate'],
+      columns: ['name', 'metalType', 'purity', 'unit', 'tax', 'rate'],
     };
   }
 

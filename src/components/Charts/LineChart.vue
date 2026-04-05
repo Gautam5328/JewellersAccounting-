@@ -193,7 +193,8 @@ export default {
       return this.points.length;
     },
     count() {
-      return Math.max(...this.points.map((p) => p.length));
+      const lengths = this.points.map((p) => p?.length ?? 0);
+      return lengths.length ? Math.max(...lengths) : 0;
     },
     xs() {
       return Array(this.count)
@@ -222,10 +223,12 @@ export default {
       return this.xs.map((x, i) => [x, this.ys.map((y) => y[i])]);
     },
     min() {
-      return Math.min(...this.points.flat());
+      const values = this.points.flat().filter((value) => typeof value === 'number');
+      return values.length ? Math.min(...values) : 0;
     },
     max() {
-      return Math.max(...this.points.flat());
+      const values = this.points.flat().filter((value) => typeof value === 'number');
+      return values.length ? Math.max(...values) : 0;
     },
     axis() {
       return `M ${this.axisPadding + this.left} ${this.axisPadding} V ${
@@ -265,7 +268,11 @@ export default {
   },
   methods: {
     gradY(i) {
-      return Math.min(...this.ys[i]).toFixed();
+      const row = this.ys[i];
+      if (!row?.length) {
+        return String(this.viewBoxHeight - this.padding - this.bottom);
+      }
+      return Math.min(...row).toFixed();
     },
     yScalerLocation(i) {
       return (
@@ -281,17 +288,40 @@ export default {
       return this.formatY((i * (max - min)) / this.yLabelDivisions + min);
     },
     getLine(i) {
-      const [x, y] = this.xy[0];
-      let d = `M ${x} ${y[i]} `;
+      if (!this.xy.length) {
+        return '';
+      }
+
+      const first = this.xy[0];
+      if (!first || !first[1]?.length) {
+        return '';
+      }
+
+      const [x0, y0] = first;
+      if (y0[i] === undefined) {
+        return '';
+      }
+
+      let d = `M ${x0} ${y0[i]} `;
       this.xy.slice(1).forEach(([x, y]) => {
+        if (!y?.length || y[i] === undefined) {
+          return;
+        }
         d += `L ${x} ${y[i]} `;
       });
       return d;
     },
     getGradLine(i) {
-      let bo = this.viewBoxHeight - this.padding - this.bottom;
+      if (!this.xy.length) {
+        return '';
+      }
+
+      const bo = this.viewBoxHeight - this.padding - this.bottom;
       let d = `M ${this.padding + this.left} ${bo}`;
       this.xy.forEach(([x, y]) => {
+        if (!y?.length || y[i] === undefined) {
+          return;
+        }
         d += `L ${x} ${y[i]} `;
       });
       return d + ` V ${bo} Z`;

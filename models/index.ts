@@ -5,6 +5,7 @@ import { AccountingSettings } from './baseModels/AccountingSettings/AccountingSe
 import { Address } from './baseModels/Address/Address';
 import { Defaults } from './baseModels/Defaults/Defaults';
 import { Item } from './baseModels/Item/Item';
+import { JewelryItem } from './inventory/JewelryItem';
 import { JournalEntry } from './baseModels/JournalEntry/JournalEntry';
 import { JournalEntryAccount } from './baseModels/JournalEntryAccount/JournalEntryAccount';
 import { Misc } from './baseModels/Misc';
@@ -28,6 +29,8 @@ import { PurchaseInvoice } from './baseModels/PurchaseInvoice/PurchaseInvoice';
 import { PurchaseInvoiceItem } from './baseModels/PurchaseInvoiceItem/PurchaseInvoiceItem';
 import { SalesInvoice } from './baseModels/SalesInvoice/SalesInvoice';
 import { SalesInvoiceItem } from './baseModels/SalesInvoiceItem/SalesInvoiceItem';
+import { JewelryInvoice } from './inventory/JewelryInvoice';
+import { JewelryInvoiceItem } from './inventory/JewelryInvoiceItem';
 import { SalesQuote } from './baseModels/SalesQuote/SalesQuote';
 import { SalesQuoteItem } from './baseModels/SalesQuoteItem/SalesQuoteItem';
 import { SetupWizard } from './baseModels/SetupWizard/SetupWizard';
@@ -43,8 +46,11 @@ import { SerialNumber } from './inventory/SerialNumber';
 import { Shipment } from './inventory/Shipment';
 import { ShipmentItem } from './inventory/ShipmentItem';
 import { StockLedgerEntry } from './inventory/StockLedgerEntry';
+import { JewelryStockLedger } from './inventory/JewelryStockLedger';
 import { StockMovement } from './inventory/StockMovement';
 import { StockMovementItem } from './inventory/StockMovementItem';
+import { GoldRate } from './inventory/GoldRate';
+import { DiamondRate } from './inventory/DiamondRate';
 import { ClosingAmounts } from './inventory/Point of Sale/ClosingAmounts';
 import { ClosingCash } from './inventory/Point of Sale/ClosingCash';
 import { OpeningAmounts } from './inventory/Point of Sale/OpeningAmounts';
@@ -67,6 +73,7 @@ export const models = {
   Batch,
   Defaults,
   Item,
+  JewelryItem,
   ItemGroup,
   ItemEnquiry,
   JournalEntry,
@@ -90,6 +97,8 @@ export const models = {
   PurchaseInvoiceItem,
   SalesInvoice,
   SalesInvoiceItem,
+  JewelryInvoice,
+  JewelryInvoiceItem,
   AppliedCouponCodes,
   SalesQuote,
   SalesQuoteItem,
@@ -103,6 +112,9 @@ export const models = {
   StockMovement,
   StockMovementItem,
   StockLedgerEntry,
+  JewelryStockLedger,
+  GoldRate,
+  DiamondRate,
   Location,
   Shipment,
   ShipmentItem,

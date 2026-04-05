@@ -19,6 +19,11 @@ import { Doc } from 'fyo/model/doc';
 
 export class SalesInvoice extends Invoice {
   items?: SalesInvoiceItem[];
+  oldGoldWeight?: number;
+  oldGoldExchangeAmount?: Money;
+  karigar?: string;
+  karigarCharges?: Money;
+  repairOrderRef?: string;
 
   async getPosting() {
     const exchangeRate = this.exchangeRate ?? 1;

@@ -1,18 +1,23 @@
 {
-  "name": "SalesInvoiceItem",
-  "label": "Sales Invoice Item",
-  "extends": "InvoiceItem",
+  "name": "JewelryInvoiceItem",
+  "label": "Jewelry Invoice Item",
+  "isChild": true,
   "fields": [
     {
-      "fieldname": "isFreeItem",
-      "fieldtype": "Check",
-      "default": false,
-      "hidden": true
+      "fieldname": "item",
+      "label": "Item",
+      "fieldtype": "Link",
+      "target": "Item",
+      "required": true,
+      "create": true,
+      "section": "Default"
     },
     {
-      "fieldname": "pricingRule",
-      "fieldtype": "Data",
-      "hidden": true
+      "fieldname": "jewelryItem",
+      "label": "Jewelry Item",
+      "fieldtype": "Link",
+      "target": "JewelryItem",
+      "section": "Default"
     },
     {
       "fieldname": "metalType",
@@ -31,7 +36,8 @@
           "value": "Diamond",
           "label": "Diamond"
         }
-      ]
+      ],
+      "section": "Default"
     },
     {
       "fieldname": "purity",
@@ -50,143 +56,124 @@
           "value": "24K",
           "label": "24K"
         }
-      ]
+      ],
+      "section": "Default"
     },
     {
       "fieldname": "grossWeight",
       "label": "Gross Weight (g)",
-      "fieldtype": "Float"
+      "fieldtype": "Float",
+      "section": "Gold Details"
     },
     {
       "fieldname": "netWeight",
       "label": "Net Weight (g)",
-      "fieldtype": "Float"
+      "fieldtype": "Float",
+      "section": "Gold Details"
     },
     {
       "fieldname": "wastagePercentage",
       "label": "Wastage %",
-      "fieldtype": "Float"
+      "fieldtype": "Float",
+      "section": "Gold Details"
     },
     {
       "fieldname": "goldRate",
       "label": "Gold Rate (₹/g)",
-      "fieldtype": "Currency"
+      "fieldtype": "Currency",
+      "section": "Gold Details"
     },
     {
       "fieldname": "goldValue",
       "label": "Gold Value",
       "fieldtype": "Currency",
-      "readOnly": true
+      "readOnly": true,
+      "section": "Gold Details"
     },
     {
       "fieldname": "wastageAmount",
       "label": "Wastage Amount",
       "fieldtype": "Currency",
-      "readOnly": true
-    },
-    {
-      "fieldname": "makingCharges",
-      "label": "Making Charges",
-      "fieldtype": "Currency"
+      "readOnly": true,
+      "section": "Gold Details"
     },
     {
       "fieldname": "carat",
       "label": "Carat",
-      "fieldtype": "Float"
+      "fieldtype": "Float",
+      "section": "Diamond Details"
     },
     {
       "fieldname": "cut",
       "label": "Cut",
-      "fieldtype": "Data"
+      "fieldtype": "Data",
+      "section": "Diamond Details"
     },
     {
       "fieldname": "clarity",
       "label": "Clarity",
-      "fieldtype": "Data"
+      "fieldtype": "Data",
+      "section": "Diamond Details"
     },
     {
       "fieldname": "color",
       "label": "Color",
-      "fieldtype": "Data"
+      "fieldtype": "Data",
+      "section": "Diamond Details"
     },
     {
       "fieldname": "ratePerCarat",
-      "label": "Rate/Carat",
-      "fieldtype": "Currency"
+      "label": "Rate Per Carat",
+      "fieldtype": "Currency",
+      "section": "Diamond Details"
     },
     {
       "fieldname": "diamondValue",
       "label": "Diamond Value",
       "fieldtype": "Currency",
-      "readOnly": true
+      "readOnly": true,
+      "section": "Diamond Details"
+    },
+    {
+      "fieldname": "makingCharges",
+      "label": "Making Charges",
+      "fieldtype": "Currency",
+      "section": "Totals"
+    },
+    {
+      "fieldname": "gstPercent",
+      "label": "GST (%)",
+      "fieldtype": "Float",
+      "section": "Totals"
+    },
+    {
+      "fieldname": "makingGstPercent",
+      "label": "Making GST (%)",
+      "fieldtype": "Float",
+      "section": "Totals"
     },
     {
       "fieldname": "lineAmount",
       "label": "Line Amount",
       "fieldtype": "Currency",
-      "readOnly": true
+      "readOnly": true,
+      "section": "Totals"
     },
     {
       "fieldname": "lineGstAmount",
-      "label": "Line GST Amount",
+      "label": "Line GST",
       "fieldtype": "Currency",
-      "readOnly": true
+      "readOnly": true,
+      "section": "Totals"
     },
     {
       "fieldname": "totalAmount",
       "label": "Total Amount",
       "fieldtype": "Currency",
-      "readOnly": true
-    },
-    {
-      "fieldname": "gstPercent",
-      "label": "GST (%)",
-      "fieldtype": "Float"
-    },
-    {
-      "fieldname": "makingGstPercent",
-      "label": "Making GST (%)",
-      "fieldtype": "Float"
+      "readOnly": true,
+      "section": "Totals"
     }
   ],
-  "tableFields": [
-    "item",
-    "metalType",
-    "purity",
-    "netWeight",
-    "carat",
-    "goldRate",
-    "ratePerCarat",
-    "makingCharges",
-    "lineAmount",
-    "lineGstAmount",
-    "totalAmount"
-  ],
-  "quickEditFields": [
-    "item",
-    "account",
-    "description",
-    "metalType",
-    "purity",
-    "grossWeight",
-    "netWeight",
-    "wastagePercentage",
-    "goldRate",
-    "makingCharges",
-    "carat",
-    "cut",
-    "clarity",
-    "color",
-    "ratePerCarat",
-    "gstPercent",
-    "makingGstPercent",
-    "lineAmount",
-    "lineGstAmount",
-    "totalAmount",
-    "tax",
-    "rate",
-    "quantity",
-    "amount"
-  ],
+  "tableFields": ["item", "metalType", "netWeight", "carat", "makingCharges", "totalAmount"],
   "keywordFields": ["item", "metalType", "purity", "cut", "clarity", "color"]
 }

@@ -1,0 +1,155 @@
+{
+  "name": "JewelryStockLedger",
+  "label": "Jewelry Stock Ledger",
+  "isSingle": false,
+  "naming": "autoincrement",
+  "fields": [
+    {
+      "fieldname": "date",
+      "label": "Date",
+      "fieldtype": "Datetime",
+      "required": true,
+      "section": "Default"
+    },
+    {
+      "fieldname": "jewelryItem",
+      "label": "Jewelry Item",
+      "fieldtype": "Link",
+      "target": "JewelryItem",
+      "section": "Default"
+    },
+    {
+      "fieldname": "item",
+      "label": "Item",
+      "fieldtype": "Link",
+      "target": "Item",
+      "section": "Default"
+    },
+    {
+      "fieldname": "entryType",
+      "label": "Entry Type",
+      "fieldtype": "Select",
+      "required": true,
+      "default": "IN",
+      "options": [
+        {
+          "value": "IN",
+          "label": "IN"
+        },
+        {
+          "value": "OUT",
+          "label": "OUT"
+        },
+        {
+          "value": "ADJUSTMENT",
+          "label": "ADJUSTMENT"
+        }
+      ],
+      "section": "Default"
+    },
+    {
+      "fieldname": "metalType",
+      "label": "Metal Type",
+      "fieldtype": "Select",
+      "options": [
+        {
+          "value": "Gold",
+          "label": "Gold"
+        },
+        {
+          "value": "Silver",
+          "label": "Silver"
+        },
+        {
+          "value": "Diamond",
+          "label": "Diamond"
+        }
+      ],
+      "section": "Details"
+    },
+    {
+      "fieldname": "purity",
+      "label": "Purity",
+      "fieldtype": "Select",
+      "options": [
+        {
+          "value": "18K",
+          "label": "18K"
+        },
+        {
+          "value": "22K",
+          "label": "22K"
+        },
+        {
+          "value": "24K",
+          "label": "24K"
+        }
+      ],
+      "section": "Details"
+    },
+    {
+      "fieldname": "weight",
+      "label": "Weight (g)",
+      "fieldtype": "Float",
+      "section": "Details"
+    },
+    {
+      "fieldname": "carat",
+      "label": "Carat",
+      "fieldtype": "Float",
+      "section": "Details"
+    },
+    {
+      "fieldname": "rate",
+      "label": "Rate (₹/unit)",
+      "fieldtype": "Currency",
+      "section": "Details"
+    },
+    {
+      "fieldname": "amount",
+      "label": "Amount",
+      "fieldtype": "Currency",
+      "readOnly": true,
+      "section": "Details"
+    },
+    {
+      "fieldname": "referenceType",
+      "label": "Reference Type",
+      "fieldtype": "Data",
+      "section": "Reference"
+    },
+    {
+      "fieldname": "referenceName",
+      "label": "Reference Name",
+      "fieldtype": "Data",
+      "section": "Reference"
+    },
+    {
+      "fieldname": "referenceLine",
+      "label": "Reference Line",
+      "fieldtype": "Data",
+      "section": "Reference"
+    },
+    {
+      "fieldname": "remarks",
+      "label": "Remarks",
+      "fieldtype": "Text",
+      "section": "Reference"
+    }
+  ],
+  "quickEditFields": [
+    "date",
+    "jewelryItem",
+    "item",
+    "entryType",
+    "metalType",
+    "purity",
+    "weight",
+    "carat",
+    "rate",
+    "amount",
+    "referenceType",
+    "referenceName"
+  ],
+  "keywordFields": ["jewelryItem", "item", "entryType", "referenceType", "referenceName"]
+}

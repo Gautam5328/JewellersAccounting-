@@ -1,40 +1,38 @@
+import { Doc } from 'fyo/model/doc';
 import { ChangeArg } from 'fyo/model/types';
 import { ModelNameEnum } from 'models/types';
-import {
-  calculateJewelryLine,
-  getLatestDiamondRate,
-  getLatestGoldRate,
-  getNumber,
-} from 'models/inventory/jewelryCalculations';
-import { InvoiceItem } from '../InvoiceItem/InvoiceItem';
+import { getNumber, calculateJewelryLine, getLatestGoldRate } from './jewelryCalculations';
+import { Money } from 'pesa';
 
-export class SalesInvoiceItem extends InvoiceItem {
+export class JewelryInvoiceItem extends Doc {
+  item?: string;
+  jewelryItem?: string;
   metalType?: 'Gold' | 'Silver' | 'Diamond';
   purity?: '18K' | '22K' | '24K';
-  grossWeight?: number;
   netWeight?: number;
+  grossWeight?: number;
   wastagePercentage?: number;
-  goldRate?: import('pesa').Money;
-  goldValue?: import('pesa').Money;
-  wastageAmount?: import('pesa').Money;
-  makingCharges?: import('pesa').Money;
+  goldRate?: Money;
+  goldValue?: Money;
+  wastageAmount?: Money;
   carat?: number;
   cut?: string;
   clarity?: string;
   color?: string;
-  ratePerCarat?: import('pesa').Money;
-  diamondValue?: import('pesa').Money;
-  lineAmount?: import('pesa').Money;
-  lineGstAmount?: import('pesa').Money;
-  totalAmount?: import('pesa').Money;
+  ratePerCarat?: Money;
+  diamondValue?: Money;
+  makingCharges?: Money;
   gstPercent?: number;
   makingGstPercent?: number;
+  lineAmount?: Money;
+  lineGstAmount?: Money;
+  totalAmount?: Money;
 
   override async change(ch: ChangeArg): Promise<void> {
     await super.change(ch);
 
     if (ch.changed === 'item' && this.item) {
-      await this.hydrateJewelryDefaults();
+      await this.hydrateItemDefaults();
     }
 
     if (
@@ -47,9 +45,6 @@ export class SalesInvoiceItem extends InvoiceItem {
         'wastagePercentage',
         'makingCharges',
         'carat',
-        'cut',
-        'clarity',
-        'color',
         'ratePerCarat',
         'gstPercent',
         'makingGstPercent',
@@ -59,20 +54,25 @@ export class SalesInvoiceItem extends InvoiceItem {
     }
   }
 
-  private async hydrateJewelryDefaults() {
-    const itemData = await this.fyo.db.get(
+  override async beforeSync(): Promise<void> {
+    await super.beforeSync();
+    await this.applyJewelryCalculation();
+  }
+
+  private async hydrateItemDefaults() {
+    const data = await this.fyo.db.get(
       ModelNameEnum.Item,
       this.item as string,
       ['metalType', 'purity', 'weight', 'carat', 'makingCharges']
     );
 
     await this.set({
-      metalType: this.metalType ?? (itemData.metalType as string),
-      purity: this.purity ?? (itemData.purity as string),
-      netWeight: (this.netWeight ?? getNumber(itemData.weight)) as number,
-      carat: (this.carat ?? getNumber(itemData.carat)) as number,
+      metalType: (this.metalType ?? data.metalType) as string,
+      purity: (this.purity ?? data.purity) as string,
+      netWeight: (this.netWeight ?? getNumber(data.weight)) as number,
+      carat: (this.carat ?? getNumber(data.carat)) as number,
       makingCharges: this.fyo.pesa(
-        getNumber(this.makingCharges) || getNumber(itemData.makingCharges)
+        getNumber(this.makingCharges) || getNumber(data.makingCharges)
       ),
     });
 
@@ -82,25 +82,9 @@ export class SalesInvoiceItem extends InvoiceItem {
         await this.set('goldRate', this.fyo.pesa(latestGoldRate));
       }
     }
-
-    if (!this.ratePerCarat?.float) {
-      const latestDiamondRate = await getLatestDiamondRate(
-        this.fyo,
-        this.cut,
-        this.clarity,
-        this.color
-      );
-      if (latestDiamondRate !== undefined) {
-        await this.set('ratePerCarat', this.fyo.pesa(latestDiamondRate));
-      }
-    }
   }
 
   private async applyJewelryCalculation() {
-    if (!this.metalType && !this.netWeight && !this.carat) {
-      return;
-    }
-
     const result = calculateJewelryLine({
       metalType: this.metalType,
       purity: this.purity,
@@ -121,8 +105,6 @@ export class SalesInvoiceItem extends InvoiceItem {
       lineAmount: this.fyo.pesa(result.lineAmount),
       lineGstAmount: this.fyo.pesa(result.lineGstAmount),
       totalAmount: this.fyo.pesa(result.totalAmount),
-      rate: this.fyo.pesa(result.totalAmount),
-      quantity: this.quantity ?? 1,
     });
   }
 }

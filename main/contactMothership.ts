@@ -18,8 +18,6 @@ export function getUrlAndTokenString(): Creds {
   }
 
   if (!fs.existsSync(errLogCredsPath)) {
-    // eslint-disable-next-line no-console
-    !inProduction && console.log(`${errLogCredsPath} doesn't exist, can't log`);
     return empty;
   }
 
@@ -48,6 +46,10 @@ export function getUrlAndTokenString(): Creds {
 
 export async function sendError(body: string, main: Main) {
   const { errorLogUrl, tokenString } = getUrlAndTokenString();
+  if (!errorLogUrl || !tokenString) {
+    return;
+  }
+
   const headers = {
     Authorization: tokenString,
     Accept: 'application/json',

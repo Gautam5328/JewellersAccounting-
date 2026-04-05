@@ -125,6 +125,37 @@
       "edit": false,
       "readOnly": true,
       "section": "References"
+    },
+    {
+      "fieldname": "oldGoldWeight",
+      "label": "Old Gold Exchange (g)",
+      "fieldtype": "Float",
+      "section": "References"
+    },
+    {
+      "fieldname": "oldGoldExchangeAmount",
+      "label": "Old Gold Exchange Amount",
+      "fieldtype": "Currency",
+      "section": "References"
+    },
+    {
+      "fieldname": "karigar",
+      "label": "Karigar",
+      "fieldtype": "Link",
+      "target": "Party",
+      "section": "References"
+    },
+    {
+      "fieldname": "karigarCharges",
+      "label": "Karigar Charges",
+      "fieldtype": "Currency",
+      "section": "References"
+    },
+    {
+      "fieldname": "repairOrderRef",
+      "fieldtype": "Data",
+      "label": "Repair Order Ref",
+      "section": "References"
     }
   ],
   "keywordFields": ["name", "party"]

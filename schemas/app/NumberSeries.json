@@ -30,6 +30,7 @@
       "fieldname": "referenceType",
       "label": "Reference Type",
       "fieldtype": "Select",
+      "allowCustom": true,
       "options": [
         {
           "value": "SalesInvoice",
@@ -62,6 +63,14 @@
         {
           "value": "PurchaseReceipt",
           "label": "Purchase Receipt"
+        },
+        {
+          "value": "JewelryItem",
+          "label": "Jewelry Item"
+        },
+        {
+          "value": "JewelryInvoice",
+          "label": "Jewelry Invoice"
         },
         {
           "value": "PricingRule",

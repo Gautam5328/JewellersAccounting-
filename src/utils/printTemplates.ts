@@ -80,7 +80,14 @@ export async function getPrintTemplatePropValues(
   let totalTax;
 
   if (values.doc.entryType !== ModelNameEnum.Shipment) {
-    totalTax = await ((sinvDoc as Invoice) ?? (doc as Payment))?.getTotalTax();
+    const taxDoc = (sinvDoc ?? doc) as any;
+    if (typeof taxDoc?.getTotalTax === 'function') {
+      totalTax = await taxDoc.getTotalTax();
+    } else {
+      totalTax = 0;
+    }
+  } else {
+    totalTax = 0;
   }
 
   if (doc.schema.name == ModelNameEnum.Payment) {
@@ -89,10 +96,26 @@ export async function getPrintTemplatePropValues(
     );
   }
 
-  (values.doc as PrintTemplateData).subTotal = doc.fyo.format(
-    ((doc.grandTotal as Money) ?? (doc.amount as Money)).sub(totalTax || 0),
-    ModelNameEnum.Currency
-  );
+  if (doc.schemaName === ModelNameEnum.JewelryInvoice) {
+    const subtotal = (doc as any).subtotal as Money | undefined;
+    const gstAmount = (doc as any).gstAmount as Money | undefined;
+
+    (values.doc as PrintTemplateData).subTotal = doc.fyo.format(
+      subtotal ?? 0,
+      ModelNameEnum.Currency
+    );
+    (values.doc as PrintTemplateData).taxes = [
+      {
+        account: fyo.t`GST`,
+        amount: doc.fyo.format(gstAmount ?? 0, ModelNameEnum.Currency),
+      },
+    ];
+  } else {
+    (values.doc as PrintTemplateData).subTotal = doc.fyo.format(
+      ((doc.grandTotal as Money) ?? (doc.amount as Money)).sub(totalTax || 0),
+      ModelNameEnum.Currency
+    );
+  }
 
   const printSettings = await fyo.doc.getDoc(ModelNameEnum.PrintSettings);
   const printValues = await getPrintTemplateDocValues(

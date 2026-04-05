@@ -34,6 +34,7 @@ import {
   getStockBalanceEntries,
 } from 'reports/inventory/helpers';
 import { QueryFilter } from 'utils/db/types';
+import { calculateJewelryLine, getNumber } from 'models/inventory/jewelryCalculations';
 
 export abstract class InvoiceItem extends Doc {
   item?: string;
@@ -923,7 +924,10 @@ export abstract class InvoiceItem extends Doc {
 
   static createFilters: FiltersMap = {
     item: (doc: Doc) => {
-      return { for: doc.isSales ? 'Sales' : 'Purchases' };
+      return {
+        for: doc.isSales ? 'Sales' : 'Purchases',
+        metalType: ['in', ['Gold', 'Silver', 'Diamond']],
+      };
     },
   };
 
@@ -947,6 +951,45 @@ export abstract class InvoiceItem extends Doc {
 }
 
 async function getItemRate(doc: InvoiceItem): Promise<Money | undefined> {
+  if (doc.schemaName === ModelNameEnum.SalesInvoiceItem) {
+    const jewelryDoc = doc as InvoiceItem & {
+      metalType?: string;
+      purity?: string;
+      netWeight?: number;
+      goldRate?: Money;
+      wastagePercentage?: number;
+      makingCharges?: Money;
+      carat?: number;
+      ratePerCarat?: Money;
+      gstPercent?: number;
+      makingGstPercent?: number;
+      lineAmount?: Money;
+    };
+
+    if (
+      jewelryDoc.metalType ||
+      getNumber(jewelryDoc.netWeight) > 0 ||
+      getNumber(jewelryDoc.carat) > 0
+    ) {
+      const lineAmount = calculateJewelryLine({
+        metalType: jewelryDoc.metalType,
+        purity: jewelryDoc.purity,
+        netWeight: jewelryDoc.netWeight,
+        goldRate: getNumber(jewelryDoc.goldRate),
+        wastagePercentage: jewelryDoc.wastagePercentage,
+        makingCharges: getNumber(jewelryDoc.makingCharges),
+        carat: jewelryDoc.carat,
+        ratePerCarat: getNumber(jewelryDoc.ratePerCarat),
+        gstPercent: jewelryDoc.gstPercent ?? 3,
+        makingGstPercent: jewelryDoc.makingGstPercent ?? 5,
+      }).lineAmount;
+
+      if (lineAmount > 0) {
+        return doc.fyo.pesa(lineAmount);
+      }
+    }
+  }
+
   if (doc.isFreeItem) {
     return doc.rate;
   }

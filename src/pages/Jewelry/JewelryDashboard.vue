@@ -9,6 +9,10 @@
           <p class="text-xl font-semibold">{{ formatCurrency(kpis.dailySales) }}</p>
         </div>
         <div class="rounded border p-3 dark:border-gray-800">
+          <p class="text-xs text-gray-600 dark:text-gray-300">Today Expense</p>
+          <p class="text-xl font-semibold">{{ formatCurrency(kpis.todayExpense) }}</p>
+        </div>
+        <div class="rounded border p-3 dark:border-gray-800">
           <p class="text-xs text-gray-600 dark:text-gray-300">Gold Stock (g)</p>
           <p class="text-xl font-semibold">{{ kpis.goldStock.toFixed(3) }}</p>
         </div>
@@ -17,8 +21,8 @@
           <p class="text-xl font-semibold">{{ kpis.diamondStock.toFixed(3) }}</p>
         </div>
         <div class="rounded border p-3 dark:border-gray-800">
-          <p class="text-xs text-gray-600 dark:text-gray-300">Avg Profit / Invoice</p>
-          <p class="text-xl font-semibold">{{ formatCurrency(kpis.avgProfit) }}</p>
+          <p class="text-xs text-gray-600 dark:text-gray-300">Net (Sales - Expense)</p>
+          <p class="text-xl font-semibold">{{ formatCurrency(kpis.netToday) }}</p>
         </div>
       </div>
 
@@ -232,7 +236,9 @@ interface InvoiceRow {
 
 interface JewelryItemRow {
   metalType?: string;
-  weight?: number;
+  weight?: unknown;
+  netWeight?: unknown;
+  grossWeight?: unknown;
   carat?: number;
   status?: string;
 }
@@ -269,6 +275,8 @@ export default defineComponent({
       },
       kpis: {
         dailySales: 0,
+        todayExpense: 0,
+        netToday: 0,
         goldStock: 0,
         diamondStock: 0,
         avgProfit: 0,
@@ -316,8 +324,15 @@ export default defineComponent({
         order: 'asc',
       })) as InvoiceRow[];
 
+      const expenses = (await fyo.db.getAll(ModelNameEnum.JewelryExpense, {
+        fields: ['date', 'amount'],
+        orderBy: ['date', 'modified'],
+        order: 'desc',
+        limit: 2000,
+      })) as { date?: string | Date; amount?: unknown }[];
+
       const items = (await fyo.db.getAll(ModelNameEnum.JewelryItem, {
-        fields: ['metalType', 'weight', 'carat', 'status'],
+        fields: ['metalType', 'weight', 'netWeight', 'grossWeight', 'carat', 'status'],
       })) as JewelryItemRow[];
 
       const ledger = (await fyo.db.getAll(ModelNameEnum.JewelryStockLedger, {
@@ -351,36 +366,27 @@ export default defineComponent({
       this.kpis.dailySales = invoices
         .filter((row) => this.normalizeDate(row.date) === today)
         .reduce((sum, row) => sum + getNumber(row.grandTotal), 0);
+      this.kpis.todayExpense = expenses
+        .filter((row) => this.normalizeDate(row.date) === today)
+        .reduce((sum, row) => sum + getNumber(row.amount), 0);
+      this.kpis.netToday = this.kpis.dailySales - this.kpis.todayExpense;
       this.kpis.avgProfit =
         invoices.length > 0
           ? invoices.reduce((sum, row) => sum + getNumber(row.profitAmount), 0) /
             invoices.length
           : 0;
-      this.kpis.goldStock = items
+      const pieceGoldStock = items
         .filter((row) => row.status === 'In Stock' && row.metalType !== 'Diamond')
-        .reduce((sum, row) => sum + Number(row.weight ?? 0), 0);
-      this.kpis.diamondStock = items
+        .reduce((sum, row) => {
+          const qty =
+            getNumber(row.netWeight) ||
+            getNumber(row.weight) ||
+            getNumber(row.grossWeight);
+          return sum + qty;
+        }, 0);
+      const pieceDiamondStock = items
         .filter((row) => row.status === 'In Stock' && row.metalType === 'Diamond')
         .reduce((sum, row) => sum + Number(row.carat ?? 0), 0);
-
-      this.inventorySectors = [
-        {
-          label: 'Gold/Silver (g)',
-          value: this.kpis.goldStock,
-          color: {
-            color: uiColor('yellow', '400', '#EAB308'),
-            darkColor: uiColor('yellow', '500', '#D1930D'),
-          },
-        },
-        {
-          label: 'Diamond (ct)',
-          value: this.kpis.diamondStock,
-          color: {
-            color: uiColor('blue', '400', '#70B6F0'),
-            darkColor: uiColor('blue', '500', '#33A1FF'),
-          },
-        },
-      ];
 
       const months = Array.from({ length: 12 }).map((_, index) => {
         const date = new Date();
@@ -465,6 +471,31 @@ export default defineComponent({
       this.kpis.diamondSoldAmount = ledger
         .filter((row) => row.entryType === 'OUT' && row.metalType === 'Diamond')
         .reduce((sum, row) => sum + getNumber(row.amount), 0);
+
+      const hasLedger = ledger.length > 0;
+      this.kpis.goldStock = hasLedger ? this.kpis.goldBalance : pieceGoldStock;
+      this.kpis.diamondStock = hasLedger
+        ? this.kpis.diamondBalance
+        : pieceDiamondStock;
+
+      this.inventorySectors = [
+        {
+          label: 'Gold/Silver (g)',
+          value: Math.max(0, this.kpis.goldStock),
+          color: {
+            color: uiColor('yellow', '400', '#EAB308'),
+            darkColor: uiColor('yellow', '500', '#D1930D'),
+          },
+        },
+        {
+          label: 'Diamond (ct)',
+          value: Math.max(0, this.kpis.diamondStock),
+          color: {
+            color: uiColor('blue', '400', '#70B6F0'),
+            darkColor: uiColor('blue', '500', '#33A1FF'),
+          },
+        },
+      ];
 
       const todayKey = new Date().toISOString().slice(0, 10);
       const todayGoldOut = ledger

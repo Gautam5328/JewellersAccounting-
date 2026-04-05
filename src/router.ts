@@ -17,10 +17,12 @@ import JewelryInventory from 'src/pages/Jewelry/JewelryInventory.vue';
 import JewelryInvoice from 'src/pages/Jewelry/JewelryInvoice.vue';
 import GoldRateManager from 'src/pages/Jewelry/GoldRateManager.vue';
 import JewelryReports from 'src/pages/Jewelry/JewelryReports.vue';
+import MetalPurchase from 'src/pages/Jewelry/MetalPurchase.vue';
 import JewelryStockEntry from 'src/pages/Jewelry/JewelryStockEntry.vue';
 import type { HistoryState } from 'vue-router';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import { historyState } from './utils/refs';
+import JewelryExpenses from 'src/pages/Jewelry/JewelryExpenses.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -171,6 +173,16 @@ const routes: RouteRecordRaw[] = [
     path: '/jewelry/rates',
     name: 'Rates',
     component: GoldRateManager,
+  },
+  {
+    path: '/jewelry/metal-purchase',
+    name: 'Metal Purchase',
+    component: MetalPurchase,
+  },
+  {
+    path: '/jewelry/expenses',
+    name: 'Expenses',
+    component: JewelryExpenses,
   },
   {
     path: '/jewelry/reports',

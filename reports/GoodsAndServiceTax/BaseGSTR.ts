@@ -26,11 +26,13 @@ export abstract class BaseGSTR extends Report {
   get transferTypeMap(): Record<string, string> {
     if (this.gstrType === 'GSTR-2') {
       return {
+        ALL: 'All',
         B2B: 'B2B',
       };
     }
 
     return {
+      ALL: 'All',
       B2B: 'B2B',
       B2CL: 'B2C-Large',
       B2CS: 'B2C-Small',
@@ -101,6 +103,10 @@ export abstract class BaseGSTR extends Report {
   }
 
   get transferFilterFunction(): (row: GSTRRow) => boolean {
+    if (!this.transferType || this.transferType === 'ALL') {
+      return () => true;
+    }
+
     if (this.transferType === 'B2B') {
       return (row) => !!row.gstin;
     }
@@ -262,7 +268,7 @@ export abstract class BaseGSTR extends Report {
     }
 
     if (!this.transferType) {
-      this.transferType = 'B2B';
+      this.transferType = 'ALL';
     }
   }
 

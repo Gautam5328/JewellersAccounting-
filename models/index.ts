@@ -49,8 +49,13 @@ import { StockLedgerEntry } from './inventory/StockLedgerEntry';
 import { JewelryStockLedger } from './inventory/JewelryStockLedger';
 import { StockMovement } from './inventory/StockMovement';
 import { StockMovementItem } from './inventory/StockMovementItem';
+import { JewelryStockLedger } from './inventory/JewelryStockLedger';
+import { StockMovement } from './inventory/StockMovement';
+import { StockMovementItem } from './inventory/StockMovementItem';
 import { GoldRate } from './inventory/GoldRate';
 import { DiamondRate } from './inventory/DiamondRate';
+import { MetalPurchase } from './inventory/MetalPurchase';
+import { JewelryExpense } from './inventory/JewelryExpense';
 import { ClosingAmounts } from './inventory/Point of Sale/ClosingAmounts';
 import { ClosingCash } from './inventory/Point of Sale/ClosingCash';
 import { OpeningAmounts } from './inventory/Point of Sale/OpeningAmounts';
@@ -115,6 +120,8 @@ export const models = {
   JewelryStockLedger,
   GoldRate,
   DiamondRate,
+  MetalPurchase,
+  JewelryExpense,
   Location,
   Shipment,
   ShipmentItem,

@@ -50,6 +50,8 @@ import UOM from './app/UOM.json';
 import GoldRate from './app/GoldRate.json';
 import DiamondRate from './app/DiamondRate.json';
 import JewelryStockLedger from './app/JewelryStockLedger.json';
+import JewelryExpense from './app/JewelryExpense.json';
+import MetalPurchase from './app/MetalPurchase.json';
 import InventorySettings from './app/inventory/InventorySettings.json';
 import Location from './app/inventory/Location.json';
 import PurchaseReceipt from './app/inventory/PurchaseReceipt.json';
@@ -173,6 +175,8 @@ export const appSchemas: Schema[] | SchemaStub[] = [
 
   InventorySettings as Schema,
   JewelryStockLedger as Schema,
+  JewelryExpense as Schema,
+  MetalPurchase as Schema,
   Location as Schema,
   StockLedgerEntry as Schema,
   StockMovement as Schema,

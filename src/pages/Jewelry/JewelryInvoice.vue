@@ -130,15 +130,26 @@
             />
           </div>
           <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Rate / Carat</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Per ct price</p>
             <input
               v-model.number="draft.ratePerCarat"
               class="w-full px-2 py-1 border rounded bg-transparent"
               type="number"
               min="0"
               step="0.01"
-              placeholder="Enter rate per carat"
+              placeholder="Per ct price"
             />
+          </div>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Diamond Type</p>
+            <select
+              v-model="draft.diamondOrigin"
+              class="w-full px-2 py-1 border rounded bg-transparent"
+            >
+              <option :value="null">Select type</option>
+              <option value="Natural">Natural</option>
+              <option value="Lab">Lab</option>
+            </select>
           </div>
           <div>
             <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">GST % (Metal)</p>
@@ -260,6 +271,7 @@ export default defineComponent({
         makingCharges: null as NullableNumber,
         carat: null as NullableNumber,
         ratePerCarat: null as NullableNumber,
+        diamondOrigin: null as string | null,
         gstPercent: null as NullableNumber,
         makingGstPercent: null as NullableNumber,
         oldGoldExchangeAmount: null as NullableNumber,
@@ -511,6 +523,9 @@ export default defineComponent({
         ...(this.draft.carat ? { carat: this.draft.carat } : {}),
         ...(this.draft.ratePerCarat
           ? { ratePerCarat: fyo.pesa(this.draft.ratePerCarat) }
+          : {}),
+        ...(this.draft.diamondOrigin
+          ? { diamondOrigin: this.draft.diamondOrigin }
           : {}),
         ...(this.draft.gstPercent ? { gstPercent: this.draft.gstPercent } : {}),
         ...(this.draft.makingGstPercent

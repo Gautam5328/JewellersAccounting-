@@ -74,6 +74,11 @@ function getInventorySidebar(): SidebarRoot[] {
           route: '/jewelry/stock-entry',
         },
         {
+          label: t`Metal Purchase`,
+          name: 'inventory-metal-purchase',
+          route: '/jewelry/metal-purchase',
+        },
+        {
           label: t`Pieces`,
           name: 'inventory-pieces',
           route: '/list/JewelryItem',
@@ -116,6 +121,11 @@ function getReportSidebar() {
         label: t`Dashboard`,
         name: 'jewelry-dashboard',
         route: '/jewelry/dashboard',
+      },
+      {
+        label: t`Expenses`,
+        name: 'jewelry-expenses',
+        route: '/jewelry/expenses',
       },
       {
         label: t`Invoices`,

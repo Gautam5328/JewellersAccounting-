@@ -79,7 +79,7 @@
     },
     {
       "fieldname": "goldRate",
-      "label": "Gold Rate (₹/g)",
+      "label": "Gold price (₹/g)",
       "fieldtype": "Currency",
       "section": "Gold Details"
     },
@@ -104,6 +104,22 @@
       "section": "Diamond Details"
     },
     {
+      "fieldname": "diamondOrigin",
+      "label": "Diamond Type",
+      "fieldtype": "Select",
+      "options": [
+        {
+          "value": "Natural",
+          "label": "Natural"
+        },
+        {
+          "value": "Lab",
+          "label": "Lab"
+        }
+      ],
+      "section": "Diamond Details"
+    },
+    {
       "fieldname": "cut",
       "label": "Cut",
       "fieldtype": "Data",
@@ -123,7 +139,7 @@
     },
     {
       "fieldname": "ratePerCarat",
-      "label": "Rate Per Carat",
+      "label": "Per ct price",
       "fieldtype": "Currency",
       "section": "Diamond Details"
     },

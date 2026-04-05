@@ -16,6 +16,7 @@ export class JewelryInvoiceItem extends Doc {
   goldValue?: Money;
   wastageAmount?: Money;
   carat?: number;
+  diamondOrigin?: 'Natural' | 'Lab';
   cut?: string;
   clarity?: string;
   color?: string;

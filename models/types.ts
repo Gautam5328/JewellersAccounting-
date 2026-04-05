@@ -70,6 +70,8 @@ export enum ModelNameEnum {
   StockMovementItem = 'StockMovementItem',
   StockLedgerEntry = 'StockLedgerEntry',
   JewelryStockLedger = 'JewelryStockLedger',
+  MetalPurchase = 'MetalPurchase',
+  JewelryExpense = 'JewelryExpense',
   Shipment = 'Shipment',
   ShipmentItem = 'ShipmentItem',
   PurchaseReceipt = 'PurchaseReceipt',

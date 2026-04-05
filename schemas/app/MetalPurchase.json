@@ -1,0 +1,104 @@
+{
+  "name": "MetalPurchase",
+  "label": "Metal Purchase",
+  "isSingle": false,
+  "handler": "models.inventory.MetalPurchase",
+  "fields": [
+    {
+      "fieldname": "date",
+      "label": "Date",
+      "fieldtype": "Datetime",
+      "required": true,
+      "section": "Default"
+    },
+    {
+      "fieldname": "supplier",
+      "label": "Supplier",
+      "fieldtype": "Link",
+      "target": "Party",
+      "section": "Default"
+    },
+    {
+      "fieldname": "metalType",
+      "label": "Metal Type",
+      "fieldtype": "Select",
+      "required": true,
+      "options": [
+        {
+          "value": "Gold",
+          "label": "Gold"
+        },
+        {
+          "value": "Silver",
+          "label": "Silver"
+        },
+        {
+          "value": "Diamond",
+          "label": "Diamond"
+        }
+      ],
+      "section": "Details"
+    },
+    {
+      "fieldname": "purity",
+      "label": "Purity",
+      "fieldtype": "Select",
+      "options": [
+        {
+          "value": "18K",
+          "label": "18K"
+        },
+        {
+          "value": "22K",
+          "label": "22K"
+        },
+        {
+          "value": "24K",
+          "label": "24K"
+        }
+      ],
+      "section": "Details"
+    },
+    {
+      "fieldname": "grams",
+      "label": "Weight (g)",
+      "fieldtype": "Float",
+      "section": "Details"
+    },
+    {
+      "fieldname": "carats",
+      "label": "Carats",
+      "fieldtype": "Float",
+      "section": "Details"
+    },
+    {
+      "fieldname": "ratePerUnit",
+      "label": "Rate per unit",
+      "fieldtype": "Currency",
+      "section": "Pricing"
+    },
+    {
+      "fieldname": "amount",
+      "label": "Amount",
+      "fieldtype": "Currency",
+      "readOnly": true,
+      "section": "Pricing"
+    },
+    {
+      "fieldname": "remarks",
+      "label": "Remarks",
+      "fieldtype": "Text",
+      "section": "Default"
+    }
+  ],
+  "quickEditFields": [
+    "date",
+    "supplier",
+    "metalType",
+    "purity",
+    "grams",
+    "carats",
+    "ratePerUnit"
+  ],
+  "keywordFields": ["supplier", "metalType", "purity"]
+}

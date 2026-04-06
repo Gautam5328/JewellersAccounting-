@@ -1,0 +1,175 @@
+<main class="bg-white h-full px-6" :style="{ 'font-family': print.font }">
+  <header class="py-6 flex text-sm text-gray-900 border-b">
+    <section class="w-1/3">
+      <img
+        v-if="print.displayLogo"
+        class="h-12 max-w-32 object-contain"
+        :src="print.logo"
+      />
+      <div class="text-xl text-gray-700 font-semibold" v-else>
+        {{ print.companyName }}
+      </div>
+    </section>
+    <section class="w-1/3">
+      <div>{{ print.email }}</div>
+      <div class="mt-1">{{ print.phone }}</div>
+    </section>
+    <section class="w-1/3">
+      <div v-if="print.address">{{ print.links.address.addressDisplay }}</div>
+      <div v-if="print.gstin">GSTIN: {{ print.gstin }}</div>
+    </section>
+  </header>
+
+  <section class="mt-8 flex justify-between">
+    <section class="w-1/2">
+      <h2 class="text-2xl font-semibold">{{ doc.name }}</h2>
+      <div class="flex gap-2">
+        <p class="py-2 text-base">{{ doc.date }}</p>
+        <p class="py-2 text-base">{{ doc?.time }}</p>
+      </div>
+    </section>
+
+    <section class="w-1/2" v-if="doc.party">
+      <h2 class="py-1 text-right text-lg font-semibold">{{ doc.party }}</h2>
+      <p
+        v-if="doc.links.party.address"
+        class="mt-1 text-xs text-gray-600 text-right"
+      >
+        {{ doc.links.party.links.address.addressDisplay }}
+      </p>
+      <p v-if="doc.links.party.phone" class="mt-1 text-xs text-gray-600 text-right">
+        Phone: {{ doc.links.party.phone }}
+      </p>
+      <p
+        v-if="doc.links.party.gstin"
+        class="mt-1 text-xs text-gray-600 text-right"
+      >
+        GSTIN: {{ doc.links.party.gstin }}
+      </p>
+    </section>
+  </section>
+
+  <section class="mt-8 text-sm">
+    <section class="text-gray-600 w-full flex border-b font-semibold">
+      <div class="py-3 w-1/12">#</div>
+      <div class="py-3 w-3/12">Item</div>
+      <div class="py-3 w-2/12">HSN</div>
+      <div class="py-3 text-right w-2/12">Gross (g)</div>
+      <div class="py-3 text-right w-2/12">Net (g)</div>
+      <div class="py-3 text-right w-2/12">Diamond (ct)</div>
+      <div class="py-3 text-right w-2/12">Rate</div>
+      <div class="py-3 text-right w-2/12">Amount</div>
+      <div class="py-3 text-right w-2/12">Making</div>
+    </section>
+
+    <section
+      class="flex py-2 text-gray-900 w-full border-b"
+      v-for="(row, idx) in doc.items"
+      :key="row.name"
+    >
+      <div class="w-1/12 py-2">{{ idx + 1 }}</div>
+      <div class="w-3/12 py-2">
+        <div>{{ row.item }}</div>
+        <div class="text-xs text-gray-600">
+          <span v-if="row.metalType">{{ row.metalType }}</span>
+          <span v-if="row.purity"> · {{ row.purity }}</span>
+          <span v-if="row.diamondOrigin"> · {{ row.diamondOrigin }}</span>
+        </div>
+      </div>
+      <div class="w-2/12 py-2">{{ row.hsnCode }}</div>
+      <div class="w-2/12 text-right py-2">{{ row.grossWeight }}</div>
+      <div class="w-2/12 text-right py-2">{{ row.netWeight }}</div>
+      <div class="w-2/12 text-right py-2">{{ row.carat }}</div>
+      <div class="w-2/12 text-right py-2">
+        <span v-if="row.metalType === 'Diamond'">{{ row.ratePerCarat }} /ct</span>
+        <span v-else>{{ row.goldRate }} /g</span>
+      </div>
+      <div class="w-2/12 text-right py-2">{{ row.lineAmount }}</div>
+      <div class="w-2/12 text-right py-2">{{ row.makingCharges }}</div>
+    </section>
+  </section>
+
+  <footer class="mt-8 flex justify-between text-base">
+    <section class="w-1/2 pr-4">
+      <div v-if="print.bankDetails" class="text-sm">
+        <h3 class="text-sm tracking-widest text-gray-600 mt-2">Bank Details</h3>
+        <p class="my-2 whitespace-pre-line">{{ print.bankDetails }}</p>
+      </div>
+      <div
+        class="text-sm"
+        v-if="print.displaytermsandconditions && print.termsAndConditions"
+      >
+        <h3 class="text-sm tracking-widest text-gray-600 mt-4">
+          Terms and Conditions
+        </h3>
+        <p class="my-2 whitespace-pre-line">{{ print.termsAndConditions }}</p>
+      </div>
+    </section>
+
+    <section class="w-1/2">
+      <div class="flex pl-2 justify-between py-3 border-b">
+        <h3>Gold Amount</h3>
+        <p>{{ doc.goldAmount }}</p>
+      </div>
+      <div class="flex pl-2 justify-between py-3 border-b">
+        <h3>Diamond Amount</h3>
+        <p>{{ doc.diamondAmount }}</p>
+      </div>
+      <div class="flex pl-2 justify-between py-3 border-b">
+        <h3>Stone/Gem Amount</h3>
+        <p>{{ doc.gemAmount }}</p>
+      </div>
+      <div class="flex pl-2 justify-between py-3 border-b">
+        <h3>Certification Amount</h3>
+        <p>{{ doc.certificationAmount }}</p>
+      </div>
+      <div class="flex pl-2 justify-between py-3 border-b">
+        <h3>Making Charges</h3>
+        <p>{{ doc.makingAmount }}</p>
+      </div>
+      <div class="flex pl-2 justify-between py-3 border-b">
+        <h3>Subtotal</h3>
+        <p>{{ doc.subtotal }}</p>
+      </div>
+      <div
+        class="flex pl-2 justify-between py-3 border-b"
+        v-if="doc.discountValue"
+      >
+        <h3>Discount</h3>
+        <p>- {{ doc.discountAmount }}</p>
+      </div>
+      <div class="flex pl-2 justify-between py-3 border-b">
+        <h3>GST</h3>
+        <p>{{ doc.gstAmount }}</p>
+      </div>
+      <div
+        class="flex pl-2 justify-between py-2 border-b text-sm text-gray-700"
+        v-for="tax in (doc.taxes || [])"
+        :key="tax.account"
+      >
+        <h3>{{ tax.account }}</h3>
+        <p>{{ tax.amount }}</p>
+      </div>
+      <div
+        class="flex pl-2 justify-between py-3 border-b"
+        v-if="doc.oldGoldExchangeAmount"
+      >
+        <h3>Old Gold Exchange</h3>
+        <p>- {{ doc.oldGoldExchangeAmount }}</p>
+      </div>
+      <div
+        class="flex pl-2 justify-between py-3 border-t text-green-600 font-semibold"
+      >
+        <h3>Grand Total</h3>
+        <p>{{ doc.grandTotal }}</p>
+      </div>
+      <div
+        class="mt-3 text-xs text-gray-700"
+        v-if="print.amountInWords && doc.grandTotalInWords"
+      >
+        <div class="font-semibold">Amount in words</div>
+        <div class="mt-1">{{ doc.grandTotalInWords }}</div>
+      </div>
+    </section>
+  </footer>
+</main>

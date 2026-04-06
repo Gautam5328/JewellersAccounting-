@@ -15,6 +15,7 @@ import {
 import { Money } from 'pesa';
 import { SalesInvoice } from 'models/baseModels/SalesInvoice/SalesInvoice';
 import { Payment } from 'models/baseModels/Payment/Payment';
+import { codeStateMap } from 'regional/in';
 
 export type PrintTemplateHint = {
   [key: string]: string | PrintTemplateHint | PrintTemplateHint[];
@@ -37,6 +38,7 @@ const printSettingsFields = [
   'phone',
   'address',
   'companyName',
+  'bankDetails',
   'amountInWords',
   'displaytermsandconditions',
   'termsAndConditions',
@@ -99,17 +101,86 @@ export async function getPrintTemplatePropValues(
   if (doc.schemaName === ModelNameEnum.JewelryInvoice) {
     const subtotal = (doc as any).subtotal as Money | undefined;
     const gstAmount = (doc as any).gstAmount as Money | undefined;
+    const discountAmount = (doc as any).discountAmount as Money | undefined;
+    const items = Array.isArray((doc as any).items) ? ((doc as any).items as any[]) : [];
+    const goldAmount = items.reduce((sum, row) => sum + (row?.goldValue?.float ?? 0), 0);
+    const diamondAmount = items.reduce((sum, row) => sum + (row?.diamondValue?.float ?? 0), 0);
+    const makingAmount = items.reduce((sum, row) => sum + (row?.makingCharges?.float ?? 0), 0);
+    const gemAmount = items.reduce((sum, row) => sum + (row?.gemAmount?.float ?? 0), 0);
+    const certificationAmount = items.reduce(
+      (sum, row) => sum + (row?.certificationAmount?.float ?? 0),
+      0
+    );
 
     (values.doc as PrintTemplateData).subTotal = doc.fyo.format(
       subtotal ?? 0,
       ModelNameEnum.Currency
     );
-    (values.doc as PrintTemplateData).taxes = [
-      {
-        account: fyo.t`GST`,
-        amount: doc.fyo.format(gstAmount ?? 0, ModelNameEnum.Currency),
-      },
-    ];
+    const discountValue = discountAmount?.float ?? 0;
+    (values.doc as PrintTemplateData).discountAmount = doc.fyo.format(
+      discountValue,
+      ModelNameEnum.Currency
+    );
+    (values.doc as PrintTemplateData).discountValue = discountValue;
+    (values.doc as PrintTemplateData).goldAmount = doc.fyo.format(goldAmount, ModelNameEnum.Currency);
+    (values.doc as PrintTemplateData).diamondAmount = doc.fyo.format(diamondAmount, ModelNameEnum.Currency);
+    (values.doc as PrintTemplateData).makingAmount = doc.fyo.format(makingAmount, ModelNameEnum.Currency);
+    (values.doc as PrintTemplateData).gemAmount = doc.fyo.format(gemAmount, ModelNameEnum.Currency);
+    (values.doc as PrintTemplateData).certificationAmount = doc.fyo.format(
+      certificationAmount,
+      ModelNameEnum.Currency
+    );
+
+    const invoiceType = (doc as any).invoiceType as
+      | 'GST Invoice'
+      | 'Non-GST Invoice'
+      | undefined;
+
+    if (invoiceType === 'Non-GST Invoice') {
+      (values.doc as PrintTemplateData).taxes = [];
+    } else {
+      // Split GST into CGST/SGST for intra-state, IGST otherwise.
+      let inState = true;
+      try {
+        const companyGstin = (await fyo.getValue(
+          ModelNameEnum.AccountingSettings,
+          'gstin'
+        )) as string | null;
+        const partyName = (doc as any).party as string;
+        const party = (await fyo.doc.getDoc(ModelNameEnum.Party, partyName)) as any;
+
+        let place = '';
+        if (party?.address) {
+          const pos = (await fyo.getValue(
+            ModelNameEnum.Address,
+            party.address as string,
+            'pos'
+          )) as string | undefined;
+          place = pos ?? '';
+        } else if (party?.gstin) {
+          const code = String(party.gstin).slice(0, 2);
+          place = codeStateMap[code] ?? '';
+        }
+
+        if (companyGstin && place) {
+          inState = codeStateMap[String(companyGstin).slice(0, 2)] === place;
+        }
+      } catch {
+        // fall back to intra-state split
+      }
+
+      const gst = (gstAmount?.float ?? 0) as number;
+      if (inState) {
+        (values.doc as PrintTemplateData).taxes = [
+          { account: 'CGST', amount: doc.fyo.format(gst / 2, ModelNameEnum.Currency) },
+          { account: 'SGST', amount: doc.fyo.format(gst / 2, ModelNameEnum.Currency) },
+        ];
+      } else {
+        (values.doc as PrintTemplateData).taxes = [
+          { account: 'IGST', amount: doc.fyo.format(gst, ModelNameEnum.Currency) },
+        ];
+      }
+    }
   } else {
     (values.doc as PrintTemplateData).subTotal = doc.fyo.format(
       ((doc.grandTotal as Money) ?? (doc.amount as Money)).sub(totalTax || 0),

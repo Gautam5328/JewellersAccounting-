@@ -38,6 +38,12 @@
       "section": "Contacts"
     },
     {
+      "fieldname": "bankDetails",
+      "label": "Bank Details",
+      "fieldtype": "Text",
+      "section": "Contacts"
+    },
+    {
       "fieldname": "color",
       "label": "Color",
       "placeholder": "Select Color",

@@ -79,6 +79,12 @@ function getInventorySidebar(): SidebarRoot[] {
           route: '/jewelry/metal-purchase',
         },
         {
+          label: t`Metal Purchases`,
+          name: 'inventory-metal-purchases',
+          route: '/list/MetalPurchase/Metal Purchases',
+          schemaName: 'MetalPurchase',
+        },
+        {
           label: t`Pieces`,
           name: 'inventory-pieces',
           route: '/list/JewelryItem',

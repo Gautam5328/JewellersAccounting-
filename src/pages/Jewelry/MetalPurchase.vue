@@ -39,9 +39,12 @@
               </select>
             </div>
 
-            <div>
+            <div v-if="draft.metalType === 'Gold'">
               <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Purity</p>
-              <select v-model="draft.purity" class="w-full px-2 py-1 border rounded bg-transparent">
+              <select
+                v-model="draft.purity"
+                class="w-full px-2 py-1 border rounded bg-transparent"
+              >
                 <option>18K</option>
                 <option>22K</option>
                 <option>24K</option>
@@ -182,9 +185,9 @@ export default defineComponent({
 
       const doc = fyo.doc.getNewDoc(ModelNameEnum.MetalPurchase, {
         date: new Date(this.draft.date),
-        supplier: this.draft.supplier,
+        ...(this.draft.supplier ? { supplier: this.draft.supplier } : {}),
         metalType: this.draft.metalType,
-        purity: this.draft.purity,
+        ...(this.draft.metalType === 'Gold' ? { purity: this.draft.purity } : {}),
         ...(this.draft.metalType === 'Diamond'
           ? { carats: qty }
           : { grams: qty }),

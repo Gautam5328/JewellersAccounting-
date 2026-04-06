@@ -25,6 +25,24 @@
       "section": "Default"
     },
     {
+      "fieldname": "invoiceType",
+      "label": "Invoice Type",
+      "fieldtype": "Select",
+      "required": true,
+      "default": "GST Invoice",
+      "options": [
+        {
+          "value": "GST Invoice",
+          "label": "GST Invoice"
+        },
+        {
+          "value": "Non-GST Invoice",
+          "label": "Non-GST Invoice"
+        }
+      ],
+      "section": "Default"
+    },
+    {
       "fieldname": "date",
       "label": "Date",
       "fieldtype": "Datetime",
@@ -85,6 +103,12 @@
       "section": "Tax and Totals"
     },
     {
+      "fieldname": "discountAmount",
+      "label": "Discount",
+      "fieldtype": "Currency",
+      "section": "Tax and Totals"
+    },
+    {
       "fieldname": "grandTotal",
       "label": "Grand Total",
       "fieldtype": "Currency",
@@ -106,7 +130,8 @@
     "oldGoldExchangeAmount",
     "karigar",
     "karigarCharges",
-    "repairOrderRef"
+    "repairOrderRef",
+    "discountAmount"
   ],
   "keywordFields": ["name", "party", "repairOrderRef"]
 }

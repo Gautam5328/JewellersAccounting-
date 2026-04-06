@@ -14,8 +14,12 @@ export class JewelryItem extends Doc {
   netWeight?: number;
   weight?: number;
   carat?: number;
+  diamondOrigin?: 'Natural' | 'Lab';
   makingCharges?: Money;
   wastagePercentage?: number;
+  ratePerCarat?: Money;
+  gemAmount?: Money;
+  certificationAmount?: Money;
   purchaseRate?: Money;
   saleRate?: Money;
   status?: string;
@@ -60,6 +64,20 @@ export class JewelryItem extends Doc {
   override async beforeSync(): Promise<void> {
     (this as any)._wasNewPiece = this.notInserted;
     await super.beforeSync();
+
+    // Keep a single "weight" field populated for reporting/stock summaries.
+    if (this.metalType !== 'Diamond') {
+      const weight = getNumber(this.weight);
+      if (weight > 0) {
+        return;
+      }
+
+      const derived =
+        getNumber(this.netWeight) || getNumber(this.grossWeight) || 0;
+      if (derived > 0) {
+        await this.set('weight', derived);
+      }
+    }
   }
 
   override async afterSync(): Promise<void> {

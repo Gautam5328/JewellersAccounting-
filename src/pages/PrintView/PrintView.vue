@@ -271,6 +271,25 @@ export default defineComponent({
       await printContainer.savePDF(this.doc?.name, shouldPrint);
     },
     async setTemplateFromDefault() {
+      if (this.schemaName === ModelNameEnum.JewelryInvoice && this.doc) {
+        const invoiceType = (this.doc as any)?.invoiceType as
+          | 'GST Invoice'
+          | 'Non-GST Invoice'
+          | undefined;
+        const schemaLabel =
+          this.fyo.schemaMap[this.schemaName]?.label ?? this.schemaName;
+        const desired =
+          invoiceType === 'Non-GST Invoice'
+            ? `Jewellery Non-GST Invoice - ${schemaLabel}`
+            : `Jewellery GST Invoice - ${schemaLabel}`;
+
+        // Prefer the desired template if present; otherwise fallback to first.
+        if (this.templateList.includes(desired)) {
+          await this.onTemplateNameChange(desired);
+          return;
+        }
+      }
+
       const defaultName =
         this.schemaName[0].toLowerCase() +
         this.schemaName.slice(1) +

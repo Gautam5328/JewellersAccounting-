@@ -33,6 +33,9 @@
         <button class="w-full text-left py-2" @click="go('/jewelry/inventory')">
           Inventory Overview
         </button>
+        <button class="w-full text-left py-2" @click="go('/list/MetalPurchase')">
+          Metal Purchases
+        </button>
         <button class="w-full text-left py-2" @click="go('/list/JewelryStockLedger')">
           Stock Movements
         </button>

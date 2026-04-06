@@ -7,6 +7,7 @@ import { JewelryInvoiceItem } from './JewelryInvoiceItem';
 export class JewelryInvoice extends Doc {
   party?: string;
   date?: Date;
+  invoiceType?: 'GST Invoice' | 'Non-GST Invoice';
   items?: JewelryInvoiceItem[];
   oldGoldWeight?: number;
   oldGoldExchangeAmount?: number;
@@ -15,8 +16,12 @@ export class JewelryInvoice extends Doc {
   repairOrderRef?: string;
   subtotal?: import('pesa').Money;
   gstAmount?: import('pesa').Money;
+  discountAmount?: import('pesa').Money;
   grandTotal?: import('pesa').Money;
   profitAmount?: import('pesa').Money;
+  hidden = {
+    gstAmount: () => this.invoiceType === 'Non-GST Invoice',
+  };
 
   formulas: FormulaMap = {
     subtotal: {
@@ -45,10 +50,19 @@ export class JewelryInvoice extends Doc {
         const gstAmount = getNumber(this.gstAmount);
         const exchange = getNumber(this.oldGoldExchangeAmount);
         const karigarCharges = getNumber(this.karigarCharges);
+        const discountAmount = getNumber(this.discountAmount);
 
-        return this.fyo.pesa(subtotal + gstAmount + karigarCharges - exchange);
+        return this.fyo.pesa(
+          subtotal + gstAmount + karigarCharges - exchange - discountAmount
+        );
       },
-      dependsOn: ['subtotal', 'gstAmount', 'oldGoldExchangeAmount', 'karigarCharges'],
+      dependsOn: [
+        'subtotal',
+        'gstAmount',
+        'oldGoldExchangeAmount',
+        'karigarCharges',
+        'discountAmount',
+      ],
     },
     profitAmount: {
       formula: () => {
@@ -68,17 +82,37 @@ export class JewelryInvoice extends Doc {
     await super.beforeSync();
 
     const rows = (this.items ?? []) as JewelryInvoiceItem[];
+    const invoiceType = this.invoiceType ?? 'GST Invoice';
     for (const row of rows) {
       if (!row) {
         continue;
       }
 
       const gstPercent =
-        row.gstPercent === null || row.gstPercent === undefined ? 3 : row.gstPercent;
+        invoiceType === 'Non-GST Invoice'
+          ? 0
+          : row.gstPercent === null || row.gstPercent === undefined
+            ? 3
+            : row.gstPercent;
       const makingGstPercent =
-        row.makingGstPercent === null || row.makingGstPercent === undefined
-          ? 5
-          : row.makingGstPercent;
+        invoiceType === 'Non-GST Invoice'
+          ? 0
+          : row.makingGstPercent === null || row.makingGstPercent === undefined
+            ? 5
+            : row.makingGstPercent;
+
+      if (invoiceType === 'GST Invoice') {
+        const hsn = (row as any).hsnCode;
+        if (!hsn || String(hsn).trim() === '') {
+          throw new Error('HSN Code is required for GST Invoice (default 7113).');
+        }
+      } else {
+        // Explicitly prevent any tax values from sticking around.
+        await row.set({
+          gstPercent: 0,
+          makingGstPercent: 0,
+        });
+      }
 
       const result = calculateJewelryLine({
         metalType: row.metalType,
@@ -87,6 +121,8 @@ export class JewelryInvoice extends Doc {
         goldRate: getNumber(row.goldRate),
         wastagePercentage: row.wastagePercentage,
         makingCharges: getNumber(row.makingCharges),
+        gemAmount: getNumber((row as any).gemAmount),
+        certificationAmount: getNumber((row as any).certificationAmount),
         carat: row.carat,
         ratePerCarat: getNumber(row.ratePerCarat),
         gstPercent,

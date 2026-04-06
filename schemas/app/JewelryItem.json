@@ -130,7 +130,40 @@
       "fieldname": "wastagePercentage",
       "label": "Wastage %",
       "fieldtype": "Float",
-      "default": 0,
+      "section": "Pricing"
+    },
+    {
+      "fieldname": "diamondOrigin",
+      "label": "Diamond Type",
+      "fieldtype": "Select",
+      "options": [
+        {
+          "value": "Natural",
+          "label": "Natural"
+        },
+        {
+          "value": "Lab",
+          "label": "Lab"
+        }
+      ],
+      "section": "Diamond Details"
+    },
+    {
+      "fieldname": "ratePerCarat",
+      "label": "Per ct price",
+      "fieldtype": "Currency",
+      "section": "Pricing"
+    },
+    {
+      "fieldname": "gemAmount",
+      "label": "Stone Charges",
+      "fieldtype": "Currency",
+      "section": "Pricing"
+    },
+    {
+      "fieldname": "certificationAmount",
+      "label": "Certification Amount",
+      "fieldtype": "Currency",
       "section": "Pricing"
     },
     {
@@ -187,6 +220,8 @@
     "weight",
     "carat",
     "makingCharges",
+    "gemAmount",
+    "certificationAmount",
     "status"
   ],
   "keywordFields": ["name", "barcode", "metalType", "purity", "designCategory"]

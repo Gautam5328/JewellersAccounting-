@@ -85,7 +85,7 @@
     },
     {
       "fieldname": "rate",
-      "label": "Rate",
+      "label": "Default Rate (₹/g)",
       "section": "Details",
       "fieldtype": "Currency"
     },
@@ -238,6 +238,46 @@
       "section": "Jewelry"
     },
     {
+      "fieldname": "wastagePercentage",
+      "label": "Wastage %",
+      "fieldtype": "Float",
+      "section": "Jewelry"
+    },
+    {
+      "fieldname": "diamondOrigin",
+      "label": "Diamond Type",
+      "fieldtype": "Select",
+      "section": "Jewelry",
+      "options": [
+        {
+          "value": "Natural",
+          "label": "Natural"
+        },
+        {
+          "value": "Lab",
+          "label": "Lab"
+        }
+      ]
+    },
+    {
+      "fieldname": "ratePerCarat",
+      "label": "Per ct price",
+      "fieldtype": "Currency",
+      "section": "Jewelry"
+    },
+    {
+      "fieldname": "gemAmount",
+      "label": "Stone Charges",
+      "fieldtype": "Currency",
+      "section": "Jewelry"
+    },
+    {
+      "fieldname": "certificationAmount",
+      "label": "Certification Amount",
+      "fieldtype": "Currency",
+      "section": "Jewelry"
+    },
+    {
       "fieldname": "datafromErp",
       "fieldtype": "Check",
       "hidden": true,
@@ -263,7 +303,12 @@
     "purity",
     "weight",
     "carat",
-    "makingCharges"
+    "makingCharges",
+    "wastagePercentage",
+    "diamondOrigin",
+    "ratePerCarat",
+    "gemAmount",
+    "certificationAmount"
   ],
   "keywordFields": ["name", "itemType", "for", "metalType", "purity"]
 }

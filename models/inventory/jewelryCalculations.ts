@@ -12,6 +12,8 @@ export interface JewelryLineInput {
   goldRate?: number | null;
   wastagePercentage?: number | null;
   makingCharges?: number | null;
+  gemAmount?: number | null;
+  certificationAmount?: number | null;
   carat?: number | null;
   ratePerCarat?: number | null;
   gstPercent?: number | null;
@@ -22,6 +24,8 @@ export interface JewelryLineResult {
   purityFactor: number;
   goldValue: number;
   diamondValue: number;
+  gemAmount: number;
+  certificationAmount: number;
   wastageAmount: number;
   lineAmount: number;
   lineGstAmount: number;
@@ -67,6 +71,8 @@ export function calculateJewelryLine(input: JewelryLineInput): JewelryLineResult
   const goldRate = getNumber(input.goldRate);
   const wastagePercentage = getNumber(input.wastagePercentage);
   const makingCharges = getNumber(input.makingCharges);
+  const gemAmount = getNumber(input.gemAmount);
+  const certificationAmount = getNumber(input.certificationAmount);
   const carat = getNumber(input.carat);
   const ratePerCarat = getNumber(input.ratePerCarat);
   const gstPercent =
@@ -80,18 +86,21 @@ export function calculateJewelryLine(input: JewelryLineInput): JewelryLineResult
 
   const goldValue = netWeight * goldRate * purityFactor;
   const diamondValue = carat * ratePerCarat;
-  const materialValue = (goldValue || 0) + (diamondValue || 0);
+  const materialValue = (goldValue || 0) + (diamondValue || 0) + (gemAmount || 0);
   const wastageAmount = materialValue * (wastagePercentage / 100);
-  const lineAmount = materialValue + wastageAmount + makingCharges;
+  const lineAmount =
+    materialValue + wastageAmount + makingCharges + (certificationAmount || 0);
   const lineGstAmount =
     materialValue * (gstPercent / 100) +
     wastageAmount * (gstPercent / 100) +
-    makingCharges * (makingGstPercent / 100);
+    (makingCharges + (certificationAmount || 0)) * (makingGstPercent / 100);
 
   return {
     purityFactor,
     goldValue,
     diamondValue,
+    gemAmount,
+    certificationAmount,
     wastageAmount,
     lineAmount,
     lineGstAmount,

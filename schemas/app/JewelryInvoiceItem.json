@@ -91,6 +91,13 @@
       "section": "Gold Details"
     },
     {
+      "fieldname": "hsnCode",
+      "label": "HSN Code",
+      "fieldtype": "Data",
+      "default": "7113",
+      "section": "Totals"
+    },
+    {
       "fieldname": "wastageAmount",
       "label": "Wastage Amount",
       "fieldtype": "Currency",
@@ -151,6 +158,18 @@
       "section": "Diamond Details"
     },
     {
+      "fieldname": "gemAmount",
+      "label": "Gem Amount",
+      "fieldtype": "Currency",
+      "section": "Diamond Details"
+    },
+    {
+      "fieldname": "certificationAmount",
+      "label": "Certification Amount",
+      "fieldtype": "Currency",
+      "section": "Diamond Details"
+    },
+    {
       "fieldname": "makingCharges",
       "label": "Making Charges",
       "fieldtype": "Currency",
@@ -190,6 +209,16 @@
       "section": "Totals"
     }
   ],
-  "tableFields": ["item", "metalType", "netWeight", "carat", "makingCharges", "totalAmount"],
+  "tableFields": [
+    "item",
+    "grossWeight",
+    "netWeight",
+    "carat",
+    "goldRate",
+    "ratePerCarat",
+    "lineAmount",
+    "makingCharges",
+    "totalAmount"
+  ],
   "keywordFields": ["item", "metalType", "purity", "cut", "clarity", "color"]
 }

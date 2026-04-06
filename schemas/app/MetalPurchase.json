@@ -2,7 +2,7 @@
   "name": "MetalPurchase",
   "label": "Metal Purchase",
   "isSingle": false,
-  "handler": "models.inventory.MetalPurchase",
+  "naming": "autoincrement",
   "fields": [
     {
       "fieldname": "date",

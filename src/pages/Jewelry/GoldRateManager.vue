@@ -7,7 +7,7 @@
     <div class="grid grid-cols-2 gap-4 px-4 py-3">
       <div class="rounded border p-4 dark:border-gray-800">
         <p class="font-semibold mb-3">Gold Rates (₹ / g)</p>
-        <div v-for="purity in ['18K', '22K', '24K']" :key="purity" class="mb-3">
+        <div v-for="purity in ['9K', '14K', '18K', '22K', '24K']" :key="purity" class="mb-3">
           <label class="text-xs text-gray-600 dark:text-gray-300">{{ purity }}</label>
           <div class="grid grid-cols-2 gap-2 mt-1">
             <input
@@ -97,11 +97,15 @@ export default defineComponent({
   data() {
     return {
       goldRates: {
+        '9K': null,
+        '14K': null,
         '18K': null,
         '22K': null,
         '24K': null,
       } as Record<string, number | null>,
       goldPurchaseRates: {
+        '9K': null,
+        '14K': null,
         '18K': null,
         '22K': null,
         '24K': null,
@@ -152,7 +156,7 @@ export default defineComponent({
       }
       this.recentRates = rates;
 
-      for (const purity of ['18K', '22K', '24K']) {
+      for (const purity of ['9K', '14K', '18K', '22K', '24K']) {
         const row = rates.find((rate) => rate.purity === purity);
         this.goldRates[purity] = row ? getNumber(row.ratePerGram) : null;
         this.goldPurchaseRates[purity] = row

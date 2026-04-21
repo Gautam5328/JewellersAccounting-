@@ -9,7 +9,8 @@ import { getNumber } from './jewelryCalculations';
 export class JewelryItem extends Doc {
   item?: string;
   metalType?: 'Gold' | 'Silver' | 'Diamond';
-  purity?: '18K' | '22K' | '24K';
+  purity?: '9K' | '14K' | '18K' | '22K' | '24K';
+  goldColor?: 'Yellow' | 'Rose' | 'White';
   grossWeight?: number;
   netWeight?: number;
   weight?: number;

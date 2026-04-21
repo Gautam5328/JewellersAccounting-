@@ -3,13 +3,14 @@ import { isPesa } from 'fyo/utils';
 import { ModelNameEnum } from 'models/types';
 
 export type JewelryMetalType = 'Gold' | 'Silver' | 'Diamond';
-export type JewelryPurity = '18K' | '22K' | '24K';
+export type JewelryPurity = '9K' | '14K' | '18K' | '22K' | '24K';
 
 export interface JewelryLineInput {
   metalType?: JewelryMetalType | string;
   purity?: JewelryPurity | string;
   netWeight?: number | null;
   goldRate?: number | null;
+  metalAmount?: number | null;
   wastagePercentage?: number | null;
   makingCharges?: number | null;
   gemAmount?: number | null;
@@ -33,6 +34,14 @@ export interface JewelryLineResult {
 }
 
 export function getPurityFactor(purity?: string): number {
+  if (purity === '9K') {
+    return 0.375;
+  }
+
+  if (purity === '14K') {
+    return 0.583;
+  }
+
   if (purity === '18K') {
     return 0.75;
   }
@@ -69,6 +78,7 @@ export function calculateJewelryLine(input: JewelryLineInput): JewelryLineResult
   const purityFactor = getPurityFactor(input.purity);
   const netWeight = getNumber(input.netWeight);
   const goldRate = getNumber(input.goldRate);
+  const metalAmount = getNumber(input.metalAmount);
   const wastagePercentage = getNumber(input.wastagePercentage);
   const makingCharges = getNumber(input.makingCharges);
   const gemAmount = getNumber(input.gemAmount);
@@ -84,7 +94,13 @@ export function calculateJewelryLine(input: JewelryLineInput): JewelryLineResult
       ? 5
       : getNumber(input.makingGstPercent);
 
-  const goldValue = netWeight * goldRate * purityFactor;
+  const computedGoldValue = netWeight * goldRate * purityFactor;
+  const goldValue =
+    input.metalType === 'Diamond'
+      ? 0
+      : metalAmount > 0
+        ? metalAmount
+        : computedGoldValue;
   const diamondValue = carat * ratePerCarat;
   const materialValue = (goldValue || 0) + (diamondValue || 0) + (gemAmount || 0);
   const wastageAmount = materialValue * (wastagePercentage / 100);

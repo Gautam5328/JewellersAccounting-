@@ -19,6 +19,14 @@
       "default": "22K",
       "options": [
         {
+          "value": "9K",
+          "label": "9K"
+        },
+        {
+          "value": "14K",
+          "label": "14K"
+        },
+        {
           "value": "18K",
           "label": "18K"
         },

@@ -64,6 +64,7 @@
         <div>{{ row.item }}</div>
         <div class="text-xs text-gray-600">
           <span v-if="row.metalType">{{ row.metalType }}</span>
+          <span v-if="row.goldColor"> · {{ row.goldColor }}</span>
           <span v-if="row.purity"> · {{ row.purity }}</span>
           <span v-if="row.diamondOrigin"> · {{ row.diamondOrigin }}</span>
         </div>
@@ -73,7 +74,7 @@
       <div class="w-2/12 text-right py-2">{{ row.carat }}</div>
       <div class="w-2/12 text-right py-2">
         <span v-if="row.metalType === 'Diamond'">{{ row.ratePerCarat }} /ct</span>
-        <span v-else>{{ row.goldRate }} /g</span>
+        <span v-else>{{ row.metalAmount || row.goldRate }}</span>
       </div>
       <div class="w-2/12 text-right py-2">{{ row.lineAmount }}</div>
       <div class="w-2/12 text-right py-2">{{ row.makingCharges }}</div>

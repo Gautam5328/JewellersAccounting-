@@ -90,6 +90,8 @@
           <div>
             <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Purity</p>
             <select v-model="draft.purity" class="w-full px-2 py-1 border rounded bg-transparent">
+              <option>9K</option>
+              <option>14K</option>
               <option>18K</option>
               <option>22K</option>
               <option>24K</option>
@@ -118,16 +120,14 @@
             />
           </div>
           <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
-              {{ draft.metalType === 'Silver' ? 'Silver Rate (₹/g)' : 'Gold Rate (₹/g)' }}
-            </p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Jewellery Cost</p>
             <input
-              v-model.number="draft.goldRate"
+              v-model.number="draft.metalAmount"
               class="w-full px-2 py-1 border rounded bg-transparent"
               type="number"
               min="0"
               step="0.01"
-              :placeholder="draft.metalType === 'Silver' ? 'Enter silver rate' : 'Enter gold rate'"
+              placeholder="Enter jewellery cost"
             />
           </div>
           <div>
@@ -235,7 +235,7 @@
       <div class="col-span-4 rounded border p-4 dark:border-gray-800">
         <p class="font-semibold mb-3">Live Totals</p>
         <p class="text-sm py-1">
-          {{ draft.metalType === 'Silver' ? 'Silver Value' : 'Gold Value' }}:
+          {{ draft.metalType === 'Diamond' ? 'Metal Value' : 'Jewellery Cost' }}:
           {{ formatCurrency(calculation.goldValue) }}
         </p>
         <p class="text-sm py-1">
@@ -293,7 +293,6 @@ import { ModelNameEnum } from 'models/types';
 import {
   calculateJewelryLine,
   getLatestDiamondRate,
-  getLatestGoldRate,
   getNumber,
 } from 'models/inventory/jewelryCalculations';
 import Button from 'src/components/Button.vue';
@@ -349,6 +348,7 @@ export default defineComponent({
         goldRate: null as NullableNumber,
         wastagePercentage: null as NullableNumber,
         makingCharges: null as NullableNumber,
+        metalAmount: null as NullableNumber,
         gemAmount: null as NullableNumber,
         certificationAmount: null as NullableNumber,
         carat: null as NullableNumber,
@@ -419,7 +419,6 @@ export default defineComponent({
       const [items, pieces] = await Promise.all([
         fyo.db.getAll(ModelNameEnum.Item, {
           fields: ['name'],
-          filters: { metalType: ['in', ['Gold', 'Silver', 'Diamond']] },
           orderBy: ['name'],
           order: 'asc',
         }),
@@ -549,28 +548,12 @@ export default defineComponent({
       this.draft.gemAmount = gemAmount > 0 ? gemAmount : null;
       this.draft.certificationAmount =
         certificationAmount > 0 ? certificationAmount : null;
+      this.draft.metalAmount = itemRate > 0 ? itemRate : null;
       this.draft.goldRate = null;
       this.draft.ratePerCarat = null;
 
-      if (
-        this.draft.metalType === 'Gold' &&
-        this.draft.purity
-      ) {
-        const latestGoldRate = await getLatestGoldRate(fyo, this.draft.purity);
-        if (latestGoldRate !== undefined && latestGoldRate > 0) {
-          this.draft.goldRate = latestGoldRate;
-        } else if (itemRate > 0) {
-          // Fallback if you store per-gram rate on Item.rate
-          this.draft.goldRate = itemRate;
-        }
-      }
-
-      if (this.draft.metalType === 'Silver') {
-        // No daily rate table for silver yet; use Item.rate as per-gram rate if provided.
-        if (itemRate > 0) {
-          this.draft.goldRate = itemRate;
-        }
-      }
+      // We no longer auto-calculate jewellery cost from daily metal rates.
+      // If you want default costing, store it on Item.rate (shown as Jewellery Cost above).
 
       if (this.draft.metalType === 'Diamond') {
         const latestDiamondRate = await getLatestDiamondRate(fyo);
@@ -653,7 +636,7 @@ export default defineComponent({
         }
       } else {
         if (saleRate > 0) {
-          this.draft.goldRate = saleRate;
+          this.draft.metalAmount = saleRate;
         }
       }
     },
@@ -704,7 +687,9 @@ export default defineComponent({
           : {}),
         ...(this.draft.grossWeight ? { grossWeight: this.draft.grossWeight } : {}),
         ...(this.draft.netWeight ? { netWeight: this.draft.netWeight } : {}),
-        ...(this.draft.goldRate ? { goldRate: fyo.pesa(this.draft.goldRate) } : {}),
+        ...(this.draft.metalAmount
+          ? { metalAmount: fyo.pesa(this.draft.metalAmount) }
+          : {}),
         ...(this.draft.wastagePercentage
           ? { wastagePercentage: this.draft.wastagePercentage }
           : {}),

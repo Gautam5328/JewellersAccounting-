@@ -148,6 +148,21 @@
       "fieldtype": "Check",
       "default": false,
       "section": "Customizations"
+    },
+    {
+      "fieldname": "appLockEnabled",
+      "label": "App Lock Enabled",
+      "fieldtype": "Check",
+      "default": false,
+      "description": "If enabled, the app asks for a PIN after opening the database.",
+      "section": "Security"
+    },
+    {
+      "fieldname": "appLockPin",
+      "label": "App Lock PIN",
+      "fieldtype": "Data",
+      "description": "Simple PIN stored locally in this database. Use 4-6 digits.",
+      "section": "Security"
     }
   ],
   "quickEditFields": [
@@ -155,6 +170,7 @@
     "dateFormat",
     "currency",
     "displayPrecision",
-    "hideGetStarted"
+    "hideGetStarted",
+    "appLockEnabled"
   ]
 }

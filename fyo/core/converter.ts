@@ -263,6 +263,10 @@ function toDocFloat(value: RawValue, field: Field): number {
 }
 
 function toDocCheck(value: RawValue, field: Field): boolean {
+  if (value === null || value === undefined) {
+    return false;
+  }
+
   if (typeof value === 'boolean') {
     return value;
   }

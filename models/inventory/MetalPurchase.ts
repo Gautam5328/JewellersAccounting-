@@ -7,10 +7,17 @@ export class MetalPurchase extends Doc {
   date?: Date;
   supplier?: string;
   metalType?: 'Gold' | 'Silver' | 'Diamond';
-  purity?: '18K' | '22K' | '24K';
+  purity?: '9K' | '14K' | '18K' | '22K' | '24K';
+  goldColor?: 'Yellow' | 'Rose' | 'White';
+  buyerName?: string;
+  diamondOrigin?: 'Natural' | 'Lab';
+  diamondQuality?: string;
+  diamondColor?: string;
+  diamondSize?: string;
   grams?: number;
   carats?: number;
   ratePerUnit?: import('pesa').Money;
+  totalCost?: import('pesa').Money;
   amount?: import('pesa').Money;
 
   override async beforeSync(): Promise<void> {
@@ -19,6 +26,18 @@ export class MetalPurchase extends Doc {
       this.metalType === 'Diamond'
         ? getNumber(this.carats)
         : getNumber(this.grams);
+    const totalCost = getNumber(this.totalCost);
+
+    // Preferred: user enters Total Cost directly.
+    if (qty > 0 && totalCost > 0) {
+      await this.set({
+        amount: this.fyo.pesa(totalCost),
+        ratePerUnit: this.fyo.pesa(totalCost / qty),
+      } as any);
+      return;
+    }
+
+    // Backward-compat: compute amount from rate/unit.
     const rate = getNumber(this.ratePerUnit);
     if (qty > 0 && rate > 0) {
       await this.set('amount', this.fyo.pesa(rate * qty));
@@ -76,7 +95,7 @@ export class MetalPurchase extends Doc {
         'purity',
         'grams',
         'carats',
-        'ratePerUnit',
+        'totalCost',
         'amount',
       ],
     };

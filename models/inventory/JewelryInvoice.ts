@@ -119,6 +119,7 @@ export class JewelryInvoice extends Doc {
         purity: row.purity,
         netWeight: row.netWeight,
         goldRate: getNumber(row.goldRate),
+        metalAmount: getNumber((row as any).metalAmount),
         wastagePercentage: row.wastagePercentage,
         makingCharges: getNumber(row.makingCharges),
         gemAmount: getNumber((row as any).gemAmount),
@@ -195,10 +196,21 @@ export class JewelryInvoice extends Doc {
           purity: row.purity,
           weight: getNumber(row.netWeight) || getNumber(row.grossWeight),
           carat: getNumber(row.carat),
-          rate:
-            row.metalType === 'Diamond'
-              ? row.ratePerCarat
-              : row.goldRate,
+          rate: (() => {
+            if (row.metalType === 'Diamond') {
+              return row.ratePerCarat;
+            }
+
+            const qty =
+              getNumber(row.netWeight) || getNumber(row.grossWeight) || 0;
+            const amount =
+              getNumber((row as any).goldValue) + getNumber((row as any).diamondValue);
+            if (qty > 0 && amount > 0) {
+              return this.fyo.pesa(amount / qty);
+            }
+
+            return row.goldRate;
+          })(),
           amount: this.fyo.pesa(
             getNumber((row as any).goldValue) + getNumber((row as any).diamondValue)
           ),

@@ -2,7 +2,7 @@
   <Teleport to="body">
     <Transition>
       <!-- Backdrop -->
-      <div v-if="open" class="backdrop z-20 flex justify-center items-center">
+      <div v-if="open" class="backdrop z-60 flex justify-center items-center">
         <!-- Dialog -->
         <div
           class="

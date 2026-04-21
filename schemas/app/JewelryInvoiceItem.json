@@ -9,7 +9,7 @@
       "fieldtype": "Link",
       "target": "Item",
       "required": true,
-      "create": true,
+      "create": false,
       "section": "Default"
     },
     {
@@ -40,10 +40,38 @@
       "section": "Default"
     },
     {
+      "fieldname": "goldColor",
+      "label": "Gold Color",
+      "fieldtype": "Select",
+      "options": [
+        {
+          "value": "Yellow",
+          "label": "Yellow"
+        },
+        {
+          "value": "Rose",
+          "label": "Rose"
+        },
+        {
+          "value": "White",
+          "label": "White"
+        }
+      ],
+      "section": "Default"
+    },
+    {
       "fieldname": "purity",
       "label": "Purity",
       "fieldtype": "Select",
       "options": [
+        {
+          "value": "9K",
+          "label": "9K"
+        },
+        {
+          "value": "14K",
+          "label": "14K"
+        },
         {
           "value": "18K",
           "label": "18K"
@@ -82,6 +110,12 @@
       "label": "Gold price (₹/g)",
       "fieldtype": "Currency",
       "section": "Gold Details"
+    },
+    {
+      "fieldname": "metalAmount",
+      "label": "Jewellery Cost",
+      "fieldtype": "Currency",
+      "section": "Totals"
     },
     {
       "fieldname": "goldValue",
@@ -214,7 +248,7 @@
     "grossWeight",
     "netWeight",
     "carat",
-    "goldRate",
+    "metalAmount",
     "ratePerCarat",
     "lineAmount",
     "makingCharges",

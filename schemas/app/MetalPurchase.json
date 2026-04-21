@@ -40,10 +40,38 @@
       "section": "Details"
     },
     {
+      "fieldname": "goldColor",
+      "label": "Gold Color",
+      "fieldtype": "Select",
+      "options": [
+        {
+          "value": "Yellow",
+          "label": "Yellow"
+        },
+        {
+          "value": "Rose",
+          "label": "Rose"
+        },
+        {
+          "value": "White",
+          "label": "White"
+        }
+      ],
+      "section": "Details"
+    },
+    {
       "fieldname": "purity",
       "label": "Purity",
       "fieldtype": "Select",
       "options": [
+        {
+          "value": "9K",
+          "label": "9K"
+        },
+        {
+          "value": "14K",
+          "label": "14K"
+        },
         {
           "value": "18K",
           "label": "18K"
@@ -72,8 +100,55 @@
       "section": "Details"
     },
     {
+      "fieldname": "buyerName",
+      "label": "Buyer Name",
+      "fieldtype": "Data",
+      "section": "Details"
+    },
+    {
+      "fieldname": "diamondOrigin",
+      "label": "Diamond Type",
+      "fieldtype": "Select",
+      "options": [
+        {
+          "value": "Natural",
+          "label": "Natural"
+        },
+        {
+          "value": "Lab",
+          "label": "Lab"
+        }
+      ],
+      "section": "Diamond Details"
+    },
+    {
+      "fieldname": "diamondQuality",
+      "label": "Quality",
+      "fieldtype": "Data",
+      "section": "Diamond Details"
+    },
+    {
+      "fieldname": "diamondColor",
+      "label": "Color",
+      "fieldtype": "Data",
+      "section": "Diamond Details"
+    },
+    {
+      "fieldname": "diamondSize",
+      "label": "Size",
+      "fieldtype": "Data",
+      "section": "Diamond Details"
+    },
+    {
       "fieldname": "ratePerUnit",
       "label": "Rate per unit",
+      "fieldtype": "Currency",
+      "section": "Pricing",
+      "hidden": true
+    },
+    {
+      "fieldname": "totalCost",
+      "label": "Total Cost",
       "fieldtype": "Currency",
       "section": "Pricing"
     },
@@ -95,10 +170,15 @@
     "date",
     "supplier",
     "metalType",
+    "goldColor",
     "purity",
     "grams",
     "carats",
-    "ratePerUnit"
+    "diamondOrigin",
+    "diamondQuality",
+    "diamondColor",
+    "diamondSize",
+    "totalCost"
   ],
   "keywordFields": ["supplier", "metalType", "purity"]
 }

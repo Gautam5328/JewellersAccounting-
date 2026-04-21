@@ -24,6 +24,12 @@
       :dark-mode="darkMode"
       @change-db-file="showDbSelector"
     />
+    <AppLockOverlay
+      v-if="activeScreen === 'Desk' && isLocked"
+      :expected-pin="expectedPin"
+      @unlocked="isLocked = false"
+      @reset="resetAppLock"
+    />
     <DatabaseSelector
       v-if="activeScreen === 'DatabaseSelector'"
       ref="databaseSelector"
@@ -50,6 +56,7 @@ import { ModelNameEnum } from 'models/types';
 import { systemLanguageRef } from 'src/utils/refs';
 import { defineComponent, provide, ref, Ref } from 'vue';
 import WindowsTitleBar from './components/WindowsTitleBar.vue';
+import AppLockOverlay from './components/AppLockOverlay.vue';
 import { handleErrorWithDialog } from './errorHandling';
 import { fyo } from './initFyo';
 import DatabaseSelector from './pages/DatabaseSelector.vue';
@@ -90,6 +97,7 @@ export default defineComponent({
     SetupWizard,
     DatabaseSelector,
     WindowsTitleBar,
+    AppLockOverlay,
   },
   setup() {
     const keys = useKeys();
@@ -122,11 +130,15 @@ export default defineComponent({
       dbPath: '',
       companyName: '',
       darkMode: false,
+      isLocked: false,
+      expectedPin: '',
     } as {
       activeScreen: null | Screen;
       dbPath: string;
       companyName: string;
       darkMode: boolean | undefined;
+      isLocked: boolean;
+      expectedPin: string;
     };
   },
   computed: {
@@ -176,6 +188,11 @@ export default defineComponent({
       )) as string;
       await this.setSearcher();
       updateConfigFiles(fyo);
+
+      const lockEnabled = !!fyo.singles.SystemSettings?.appLockEnabled;
+      const pin = String(fyo.singles.SystemSettings?.appLockPin ?? '').trim();
+      this.expectedPin = pin;
+      this.isLocked = lockEnabled && !!pin;
     },
     newDatabase() {
       this.activeScreen = Screen.SetupWizard;
@@ -318,6 +335,47 @@ export default defineComponent({
       this.dbPath = '';
       this.searcher = null;
       this.companyName = '';
+      this.isLocked = false;
+      this.expectedPin = '';
+    },
+    async resetAppLock(): Promise<void> {
+      const wasLocked = this.isLocked;
+      this.isLocked = false;
+      await this.$nextTick();
+
+      await showDialog({
+        title: this.t`Reset PIN`,
+        type: 'warning',
+        detail: this.t`This will disable the app lock for this database. Continue?`,
+        buttons: [
+          {
+            label: this.t`Cancel`,
+            action: () => {
+              // Bring back the lock screen if lock is still enabled.
+              const lockEnabled = !!fyo.singles.SystemSettings?.appLockEnabled;
+              const pin = String(fyo.singles.SystemSettings?.appLockPin ?? '').trim();
+              this.expectedPin = pin;
+              this.isLocked = wasLocked && lockEnabled && !!pin;
+              return null;
+            },
+            isEscape: true,
+          },
+          {
+            label: this.t`Reset`,
+            action: async () => {
+              const sys = await fyo.doc.getDoc(ModelNameEnum.SystemSettings);
+              await sys.set({
+                appLockEnabled: false,
+                appLockPin: '',
+              } as any);
+              await sys.sync();
+              this.isLocked = false;
+              this.expectedPin = '';
+              showToast({ type: 'success', message: 'PIN reset. App lock disabled.' });
+            },
+          },
+        ],
+      });
     },
   },
 });

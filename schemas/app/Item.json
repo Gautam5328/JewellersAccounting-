@@ -85,7 +85,7 @@
     },
     {
       "fieldname": "rate",
-      "label": "Default Rate (₹/g)",
+      "label": "Default Jewellery Cost (₹)",
       "section": "Details",
       "fieldtype": "Currency"
     },
@@ -104,7 +104,8 @@
       "placeholder": "Income",
       "section": "Accounts",
       "create": true,
-      "required": true
+      "required": false,
+      "hidden": true
     },
     {
       "fieldname": "expenseAccount",
@@ -114,7 +115,8 @@
       "placeholder": "Expense",
       "section": "Accounts",
       "create": true,
-      "required": true
+      "required": false,
+      "hidden": true
     },
     {
       "fieldname": "tax",
@@ -123,14 +125,16 @@
       "target": "Tax",
       "section": "Accounts",
       "create": true,
-      "placeholder": "Tax"
+      "placeholder": "Tax",
+      "hidden": true
     },
     {
       "fieldname": "hsnCode",
       "label": "HSN/SAC",
       "fieldtype": "Data",
       "placeholder": "HSN/SAC Code",
-      "section": "Inventory"
+      "section": "Inventory",
+      "hidden": true
     },
     {
       "fieldname": "barcode",
@@ -205,6 +209,14 @@
       "fieldtype": "Select",
       "section": "Jewelry",
       "options": [
+        {
+          "value": "9K",
+          "label": "9K"
+        },
+        {
+          "value": "14K",
+          "label": "14K"
+        },
         {
           "value": "18K",
           "label": "18K"
@@ -291,12 +303,8 @@
     "unit",
     "itemType",
     "for",
-    "tax",
     "description",
-    "incomeAccount",
-    "expenseAccount",
     "barcode",
-    "hsnCode",
     "trackItem",
     "uom",
     "metalType",

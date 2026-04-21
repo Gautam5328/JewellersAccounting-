@@ -40,11 +40,26 @@
             </div>
 
             <div v-if="draft.metalType === 'Gold'">
+              <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Gold Color</p>
+              <select
+                v-model="draft.goldColor"
+                class="w-full px-2 py-1 border rounded bg-transparent"
+              >
+                <option :value="null">Select color</option>
+                <option>Yellow</option>
+                <option>Rose</option>
+                <option>White</option>
+              </select>
+            </div>
+
+            <div v-if="draft.metalType === 'Gold'">
               <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Purity</p>
               <select
                 v-model="draft.purity"
                 class="w-full px-2 py-1 border rounded bg-transparent"
               >
+                <option>9K</option>
+                <option>14K</option>
                 <option>18K</option>
                 <option>22K</option>
                 <option>24K</option>
@@ -75,14 +90,66 @@
               />
             </div>
 
-            <div>
-              <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Rate / Unit</p>
+            <div v-if="draft.metalType === 'Diamond'">
+              <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Diamond Type</p>
+              <select
+                v-model="draft.diamondOrigin"
+                class="w-full px-2 py-1 border rounded bg-transparent"
+              >
+                <option :value="null">Select type</option>
+                <option>Natural</option>
+                <option>Lab</option>
+              </select>
+            </div>
+
+            <div v-if="draft.metalType === 'Diamond'">
+              <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Quality</p>
               <input
-                v-model.number="draft.ratePerUnit"
+                v-model="draft.diamondQuality"
+                type="text"
+                placeholder="e.g. VVS / VS"
+                class="w-full px-2 py-1 border rounded bg-transparent"
+              />
+            </div>
+
+            <div v-if="draft.metalType === 'Diamond'">
+              <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Color</p>
+              <input
+                v-model="draft.diamondColor"
+                type="text"
+                placeholder="e.g. D/E/F"
+                class="w-full px-2 py-1 border rounded bg-transparent"
+              />
+            </div>
+
+            <div v-if="draft.metalType === 'Diamond'">
+              <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Size</p>
+              <input
+                v-model="draft.diamondSize"
+                type="text"
+                placeholder="e.g. 1.2mm / 2.5mm"
+                class="w-full px-2 py-1 border rounded bg-transparent"
+              />
+            </div>
+
+            <div v-if="draft.metalType === 'Diamond'">
+              <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Buyer Name</p>
+              <input
+                v-model="draft.buyerName"
+                type="text"
+                placeholder="Optional"
+                class="w-full px-2 py-1 border rounded bg-transparent"
+              />
+            </div>
+
+            <div>
+              <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Total Cost</p>
+              <input
+                v-model.number="draft.totalCost"
                 type="number"
                 min="0"
                 step="0.01"
-                placeholder="₹ per unit"
+                placeholder="Enter total cost"
                 class="w-full px-2 py-1 border rounded bg-transparent"
               />
             </div>
@@ -106,8 +173,11 @@
             <span class="font-semibold">{{ formatQty(computedQty) }}</span>
           </p>
           <p class="text-sm py-1">
-            Amount:
+            Total:
             <span class="font-semibold">{{ formatCurrency(computedAmount) }}</span>
+          </p>
+          <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">
+            Rate / unit: <span class="font-semibold">{{ formatCurrency(computedRate) }}</span>
           </p>
         </div>
       </div>
@@ -138,10 +208,16 @@ export default defineComponent({
         date: today,
         supplier: null as string | null,
         metalType: 'Gold' as MetalType,
-        purity: '22K' as '18K' | '22K' | '24K',
+        purity: '22K' as '9K' | '14K' | '18K' | '22K' | '24K',
+        goldColor: null as 'Yellow' | 'Rose' | 'White' | null,
         grams: null as number | null,
         carats: null as number | null,
-        ratePerUnit: null as number | null,
+        buyerName: '' as string,
+        diamondOrigin: null as 'Natural' | 'Lab' | null,
+        diamondQuality: '' as string,
+        diamondColor: '' as string,
+        diamondSize: '' as string,
+        totalCost: null as number | null,
         remarks: '',
       },
     };
@@ -153,9 +229,15 @@ export default defineComponent({
         : this.draft.grams ?? 0;
     },
     computedAmount(): number {
-      const rate = this.draft.ratePerUnit ?? 0;
+      return this.draft.totalCost ?? 0;
+    },
+    computedRate(): number {
       const qty = this.computedQty;
-      return rate * qty;
+      const total = this.draft.totalCost ?? 0;
+      if (qty <= 0 || total <= 0) {
+        return 0;
+      }
+      return total / qty;
     },
   },
   async activated() {
@@ -177,9 +259,9 @@ export default defineComponent({
     },
     async save() {
       const qty = this.computedQty;
-      const rate = this.draft.ratePerUnit ?? 0;
-      if (qty <= 0 || rate <= 0) {
-        showToast({ type: 'warning', message: 'Enter quantity and rate' });
+      const totalCost = this.draft.totalCost ?? 0;
+      if (qty <= 0 || totalCost <= 0) {
+        showToast({ type: 'warning', message: 'Enter quantity and total cost' });
         return;
       }
 
@@ -187,11 +269,29 @@ export default defineComponent({
         date: new Date(this.draft.date),
         ...(this.draft.supplier ? { supplier: this.draft.supplier } : {}),
         metalType: this.draft.metalType,
+        ...(this.draft.metalType === 'Gold' && this.draft.goldColor
+          ? { goldColor: this.draft.goldColor }
+          : {}),
         ...(this.draft.metalType === 'Gold' ? { purity: this.draft.purity } : {}),
         ...(this.draft.metalType === 'Diamond'
           ? { carats: qty }
           : { grams: qty }),
-        ratePerUnit: fyo.pesa(rate),
+        ...(this.draft.metalType === 'Diamond' && this.draft.diamondOrigin
+          ? { diamondOrigin: this.draft.diamondOrigin }
+          : {}),
+        ...(this.draft.metalType === 'Diamond' && this.draft.diamondQuality
+          ? { diamondQuality: this.draft.diamondQuality }
+          : {}),
+        ...(this.draft.metalType === 'Diamond' && this.draft.diamondColor
+          ? { diamondColor: this.draft.diamondColor }
+          : {}),
+        ...(this.draft.metalType === 'Diamond' && this.draft.diamondSize
+          ? { diamondSize: this.draft.diamondSize }
+          : {}),
+        ...(this.draft.metalType === 'Diamond' && this.draft.buyerName
+          ? { buyerName: this.draft.buyerName }
+          : {}),
+        totalCost: fyo.pesa(totalCost),
         ...(this.draft.remarks ? { remarks: this.draft.remarks } : {}),
       });
 
@@ -207,9 +307,15 @@ export default defineComponent({
         supplier: null,
         metalType: 'Gold',
         purity: '22K',
+        goldColor: null,
         grams: null,
         carats: null,
-        ratePerUnit: null,
+        buyerName: '',
+        diamondOrigin: null,
+        diamondQuality: '',
+        diamondColor: '',
+        diamondSize: '',
+        totalCost: null,
         remarks: '',
       };
     },

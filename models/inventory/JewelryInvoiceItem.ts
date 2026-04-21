@@ -13,7 +13,8 @@ export class JewelryInvoiceItem extends Doc {
   item?: string;
   jewelryItem?: string;
   metalType?: 'Gold' | 'Silver' | 'Diamond';
-  purity?: '18K' | '22K' | '24K';
+  goldColor?: 'Yellow' | 'Rose' | 'White';
+  purity?: '9K' | '14K' | '18K' | '22K' | '24K';
   netWeight?: number;
   grossWeight?: number;
   wastagePercentage?: number;
@@ -30,6 +31,7 @@ export class JewelryInvoiceItem extends Doc {
   gemAmount?: Money;
   certificationAmount?: Money;
   makingCharges?: Money;
+  metalAmount?: Money;
   gstPercent?: number;
   makingGstPercent?: number;
   lineAmount?: Money;
@@ -68,6 +70,7 @@ export class JewelryInvoiceItem extends Doc {
         'purity',
         'netWeight',
         'goldRate',
+        'metalAmount',
         'wastagePercentage',
         'makingCharges',
         'carat',
@@ -115,6 +118,7 @@ export class JewelryInvoiceItem extends Doc {
 
     await this.set({
       metalType: (this.metalType ?? data.metalType) as string,
+      ...(this.goldColor ? {} : data.goldColor ? { goldColor: data.goldColor as string } : {}),
       purity: (this.purity ?? data.purity) as string,
       netWeight: (this.netWeight ?? getNumber(data.weight)) as number,
       carat: (this.carat ?? getNumber(data.carat)) as number,
@@ -150,22 +154,18 @@ export class JewelryInvoiceItem extends Doc {
             ),
           }
         : {}),
+      ...(getNumber(this.metalAmount) || getNumber(data.rate)
+        ? {
+            metalAmount: this.fyo.pesa(
+              getNumber(this.metalAmount) || getNumber(data.rate)
+            ),
+          }
+        : {}),
     });
 
-    const resolvedMetalType = (this.metalType ?? data.metalType) as string | undefined;
-    if (!this.goldRate?.float && resolvedMetalType === 'Gold' && this.purity) {
-      const latestGoldRate = await getLatestGoldRate(this.fyo, this.purity);
-      if (latestGoldRate !== undefined) {
-        await this.set('goldRate', this.fyo.pesa(latestGoldRate));
-      }
-    }
-
-    if (!this.goldRate?.float && resolvedMetalType === 'Silver') {
-      const perGram = getNumber(data.rate);
-      if (perGram > 0) {
-        await this.set('goldRate', this.fyo.pesa(perGram));
-      }
-    }
+    const resolvedMetalType = (this.metalType ?? data.metalType) as
+      | string
+      | undefined;
 
     if (
       (this.metalType === 'Diamond' || data.metalType === 'Diamond') &&
@@ -240,6 +240,7 @@ export class JewelryInvoiceItem extends Doc {
       await this.set({
         ...(data?.item ? { item: data.item as string } : {}),
         ...(pieceMetalType ? { metalType: pieceMetalType as string } : {}),
+        ...(data?.goldColor ? { goldColor: data.goldColor as string } : {}),
         ...(data?.purity ? { purity: data.purity as string } : {}),
         ...(grossWeight > 0 ? { grossWeight } : {}),
         ...(netWeight > 0 ? { netWeight } : {}),
@@ -260,7 +261,7 @@ export class JewelryInvoiceItem extends Doc {
         }
       } else {
         if (saleRate > 0) {
-          await this.set('goldRate', this.fyo.pesa(saleRate));
+          await this.set('metalAmount', this.fyo.pesa(saleRate));
         }
       }
     } finally {
@@ -281,6 +282,7 @@ export class JewelryInvoiceItem extends Doc {
       purity: this.purity,
       netWeight: this.netWeight,
       goldRate: getNumber(this.goldRate),
+      metalAmount: getNumber(this.metalAmount),
       wastagePercentage: this.wastagePercentage,
       makingCharges: getNumber(this.makingCharges),
       gemAmount: getNumber(this.gemAmount),

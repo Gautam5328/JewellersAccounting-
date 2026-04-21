@@ -19,7 +19,7 @@
       "label": "Item",
       "fieldtype": "Link",
       "target": "Item",
-      "create": true,
+      "create": false,
       "required": true,
       "section": "Default"
     },
@@ -59,10 +59,38 @@
       "section": "Metal Details"
     },
     {
+      "fieldname": "goldColor",
+      "label": "Gold Color",
+      "fieldtype": "Select",
+      "options": [
+        {
+          "value": "Yellow",
+          "label": "Yellow"
+        },
+        {
+          "value": "Rose",
+          "label": "Rose"
+        },
+        {
+          "value": "White",
+          "label": "White"
+        }
+      ],
+      "section": "Metal Details"
+    },
+    {
       "fieldname": "purity",
       "label": "Purity",
       "fieldtype": "Select",
       "options": [
+        {
+          "value": "9K",
+          "label": "9K"
+        },
+        {
+          "value": "14K",
+          "label": "14K"
+        },
         {
           "value": "18K",
           "label": "18K"
@@ -216,6 +244,7 @@
     "barcode",
     "designCategory",
     "metalType",
+    "goldColor",
     "purity",
     "weight",
     "carat",

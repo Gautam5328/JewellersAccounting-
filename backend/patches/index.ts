@@ -8,6 +8,8 @@ import setPaymentReferenceType from './setPaymentReferenceType';
 import fixLedgerDateTime from './v0_21_0/fixLedgerDateTime';
 import fixItemHSNField from './fixItemHSNField';
 import createPaymentMethods from './createPaymentMethods';
+import seedJewelryCatalog from './seedJewelryCatalog';
+import seedJewelryCatalogV2 from './seedJewelryCatalogV2';
 
 export default [
   { name: 'testPatch', version: '0.5.0-beta.0', patch: testPatch },
@@ -47,5 +49,15 @@ export default [
     name: 'createPaymentMethods',
     version: '0.25.1',
     patch: createPaymentMethods,
+  },
+  {
+    name: 'seedJewelryCatalog',
+    version: '0.37.0',
+    patch: seedJewelryCatalog,
+  },
+  {
+    name: 'seedJewelryCatalogV2',
+    version: '0.37.0',
+    patch: seedJewelryCatalogV2,
   },
 ] as Patch[];

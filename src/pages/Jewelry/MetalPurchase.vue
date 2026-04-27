@@ -15,22 +15,6 @@
             </div>
 
             <div>
-              <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Supplier</p>
-              <AutoComplete
-                :df="{
-                  fieldtype: 'AutoComplete',
-                  fieldname: 'supplier',
-                  label: 'Supplier',
-                  options: suppliers.map((name) => ({ label: name, value: name })),
-                }"
-                input-class="text-base py-0 h-8"
-                class="w-full"
-                :value="draft.supplier ?? ''"
-                @change="(value) => (draft.supplier = value?.value ?? null)"
-              />
-            </div>
-
-            <div>
               <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Metal Type</p>
               <select v-model="draft.metalType" class="w-full px-2 py-1 border rounded bg-transparent">
                 <option>Gold</option>
@@ -186,7 +170,6 @@
 </template>
 
 <script lang="ts">
-import AutoComplete from 'src/components/Controls/AutoComplete.vue';
 import Button from 'src/components/Button.vue';
 import PageHeader from 'src/components/PageHeader.vue';
 import { ModelNameEnum } from 'models/types';
@@ -199,14 +182,12 @@ type MetalType = 'Gold' | 'Silver' | 'Diamond';
 
 export default defineComponent({
   name: 'MetalPurchasePage',
-  components: { PageHeader, Button, AutoComplete },
+  components: { PageHeader, Button },
   data() {
     const today = new Date().toISOString().slice(0, 10);
     return {
-      suppliers: [] as string[],
       draft: {
         date: today,
-        supplier: null as string | null,
         metalType: 'Gold' as MetalType,
         purity: '22K' as '9K' | '14K' | '18K' | '22K' | '24K',
         goldColor: null as 'Yellow' | 'Rose' | 'White' | null,
@@ -240,13 +221,7 @@ export default defineComponent({
       return total / qty;
     },
   },
-  async activated() {
-    const rows = await fyo.db.getAll(ModelNameEnum.Party, {
-      fields: ['name'],
-      filters: { role: ['in', ['Supplier', 'Both']] },
-    });
-    this.suppliers = rows.map((row) => row.name as string);
-  },
+  async activated() {},
   methods: {
     formatCurrency(value: number) {
       return fyo.format(value, 'Currency');
@@ -267,7 +242,6 @@ export default defineComponent({
 
       const doc = fyo.doc.getNewDoc(ModelNameEnum.MetalPurchase, {
         date: new Date(this.draft.date),
-        ...(this.draft.supplier ? { supplier: this.draft.supplier } : {}),
         metalType: this.draft.metalType,
         ...(this.draft.metalType === 'Gold' && this.draft.goldColor
           ? { goldColor: this.draft.goldColor }
@@ -304,7 +278,6 @@ export default defineComponent({
       const today = new Date().toISOString().slice(0, 10);
       this.draft = {
         date: today,
-        supplier: null,
         metalType: 'Gold',
         purity: '22K',
         goldColor: null,

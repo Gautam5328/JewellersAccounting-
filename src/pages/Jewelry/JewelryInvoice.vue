@@ -17,6 +17,13 @@
                 {{ party }}
               </option>
             </select>
+            <button
+              class="mt-2 text-xs text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-25"
+              type="button"
+              @click="showCustomerForm = !showCustomerForm"
+            >
+              {{ showCustomerForm ? 'Hide' : 'Add new customer' }}
+            </button>
           </div>
           <div>
             <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Invoice Type</p>
@@ -26,6 +33,91 @@
             >
               <option value="GST Invoice">GST Invoice</option>
               <option value="Non-GST Invoice">Non-GST Invoice</option>
+            </select>
+          </div>
+
+          <div v-if="showCustomerForm" class="col-span-2 rounded border p-3 dark:border-gray-800">
+            <p class="font-semibold text-sm mb-2">New Customer</p>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Name</p>
+                <input
+                  v-model="newCustomer.name"
+                  class="w-full px-2 py-1 border rounded bg-transparent"
+                  type="text"
+                  placeholder="Customer name"
+                />
+              </div>
+              <div>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Phone</p>
+                <input
+                  v-model="newCustomer.phone"
+                  class="w-full px-2 py-1 border rounded bg-transparent"
+                  type="text"
+                  placeholder="Phone"
+                />
+              </div>
+              <div>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">GSTIN (optional)</p>
+                <input
+                  v-model="newCustomer.gstin"
+                  class="w-full px-2 py-1 border rounded bg-transparent"
+                  type="text"
+                  placeholder="GSTIN"
+                />
+              </div>
+              <div>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Address Line 1</p>
+                <input
+                  v-model="newCustomer.addressLine1"
+                  class="w-full px-2 py-1 border rounded bg-transparent"
+                  type="text"
+                  placeholder="Address line 1"
+                />
+              </div>
+              <div>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">City</p>
+                <input
+                  v-model="newCustomer.city"
+                  class="w-full px-2 py-1 border rounded bg-transparent"
+                  type="text"
+                  placeholder="City"
+                />
+              </div>
+              <div>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">State</p>
+                <input
+                  v-model="newCustomer.state"
+                  class="w-full px-2 py-1 border rounded bg-transparent"
+                  type="text"
+                  placeholder="State"
+                />
+              </div>
+              <div>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">PIN Code</p>
+                <input
+                  v-model="newCustomer.postalCode"
+                  class="w-full px-2 py-1 border rounded bg-transparent"
+                  type="text"
+                  placeholder="Postal code"
+                />
+              </div>
+              <div class="flex items-end justify-end">
+                <Button type="primary" @click="createCustomerInline">Save Customer</Button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Metal Type</p>
+            <select
+              v-model="draft.metalType"
+              class="w-full px-2 py-1 border rounded bg-transparent"
+              @change="onMetalTypeChanged"
+            >
+              <option>Gold</option>
+              <option>Silver</option>
+              <option>Diamond</option>
             </select>
           </div>
           <div>
@@ -50,13 +142,13 @@
             />
           </div>
           <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Jewelry Item</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Item</p>
             <select
               v-model="draft.item"
               class="w-full px-2 py-1 border rounded bg-transparent"
               @change="onItemSelected"
             >
-              <option :value="null">Select Jewelry Item</option>
+              <option :value="null">Select item</option>
               <option v-for="item in items" :key="item" :value="item">
                 {{ item }}
               </option>
@@ -79,15 +171,7 @@
               </option>
             </select>
           </div>
-          <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Metal Type</p>
-            <select v-model="draft.metalType" class="w-full px-2 py-1 border rounded bg-transparent">
-              <option>Gold</option>
-              <option>Silver</option>
-              <option>Diamond</option>
-            </select>
-          </div>
-          <div>
+          <div v-if="draft.metalType !== 'Diamond'">
             <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Purity</p>
             <select v-model="draft.purity" class="w-full px-2 py-1 border rounded bg-transparent">
               <option>9K</option>
@@ -97,7 +181,7 @@
               <option>24K</option>
             </select>
           </div>
-          <div>
+          <div v-if="draft.metalType !== 'Diamond'">
             <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Gross Weight (g)</p>
             <input
               v-model.number="draft.grossWeight"
@@ -108,7 +192,7 @@
               placeholder="Enter gross weight"
             />
           </div>
-          <div>
+          <div v-if="draft.metalType !== 'Diamond'">
             <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Net Weight (g)</p>
             <input
               v-model.number="draft.netWeight"
@@ -119,7 +203,7 @@
               placeholder="Enter net weight"
             />
           </div>
-          <div>
+          <div v-if="draft.metalType !== 'Diamond'">
             <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Jewellery Cost</p>
             <input
               v-model.number="draft.metalAmount"
@@ -176,7 +260,7 @@
               placeholder="Certification amount"
             />
           </div>
-          <div>
+          <div v-if="draft.metalType === 'Diamond'">
             <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Carat</p>
             <input
               v-model.number="draft.carat"
@@ -187,7 +271,7 @@
               placeholder="Enter carat"
             />
           </div>
-          <div>
+          <div v-if="draft.metalType === 'Diamond'">
             <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Per ct price</p>
             <input
               v-model.number="draft.ratePerCarat"
@@ -198,7 +282,7 @@
               placeholder="Per ct price"
             />
           </div>
-          <div>
+          <div v-if="draft.metalType === 'Diamond'">
             <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Diamond Type</p>
             <select
               v-model="draft.diamondOrigin"
@@ -208,6 +292,33 @@
               <option value="Natural">Natural</option>
               <option value="Lab">Lab</option>
             </select>
+          </div>
+          <div v-if="draft.metalType === 'Diamond'">
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Cut</p>
+            <input
+              v-model="draft.cut"
+              class="w-full px-2 py-1 border rounded bg-transparent"
+              type="text"
+              placeholder="Cut"
+            />
+          </div>
+          <div v-if="draft.metalType === 'Diamond'">
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Clarity</p>
+            <input
+              v-model="draft.clarity"
+              class="w-full px-2 py-1 border rounded bg-transparent"
+              type="text"
+              placeholder="Clarity"
+            />
+          </div>
+          <div v-if="draft.metalType === 'Diamond'">
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Color</p>
+            <input
+              v-model="draft.color"
+              class="w-full px-2 py-1 border rounded bg-transparent"
+              type="text"
+              placeholder="Color"
+            />
           </div>
           <div v-if="draft.invoiceType === 'GST Invoice'">
             <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">HSN Code</p>
@@ -354,11 +465,24 @@ export default defineComponent({
         carat: null as NullableNumber,
         ratePerCarat: null as NullableNumber,
         diamondOrigin: null as string | null,
+        cut: '' as string,
+        clarity: '' as string,
+        color: '' as string,
         gstPercent: null as NullableNumber,
         makingGstPercent: null as NullableNumber,
         oldGoldExchangeAmount: null as NullableNumber,
         discountAmount: null as NullableNumber,
         hsnCode: '7113' as string,
+      },
+      showCustomerForm: false,
+      newCustomer: {
+        name: '',
+        phone: '',
+        gstin: '',
+        addressLine1: '',
+        city: '',
+        state: '',
+        postalCode: '',
       },
       parties: [] as string[],
       items: [] as string[],
@@ -482,6 +606,105 @@ export default defineComponent({
         this.draft.item = this.items[0];
         await this.onItemSelected();
       }
+    },
+    onMetalTypeChanged() {
+      const mt = this.draft.metalType;
+      // Reset fields not relevant to the selected metal type.
+      if (mt === 'Diamond') {
+        this.draft.purity = '22K';
+        this.draft.grossWeight = null;
+        this.draft.netWeight = null;
+        this.draft.metalAmount = null;
+      } else {
+        if (!this.draft.purity) {
+          this.draft.purity = '22K';
+        }
+        this.draft.carat = null;
+        this.draft.ratePerCarat = null;
+        this.draft.diamondOrigin = null;
+        this.draft.cut = '';
+        this.draft.clarity = '';
+        this.draft.color = '';
+      }
+    },
+    async createCustomerInline() {
+      const name = String(this.newCustomer.name ?? '').trim();
+      if (!name) {
+        showToast({ type: 'warning', message: 'Enter customer name' });
+        return;
+      }
+
+      let partyName = name;
+      if (await fyo.db.exists(ModelNameEnum.Party, partyName)) {
+        const suffix = String(Date.now()).slice(-4);
+        partyName = `${partyName} ${suffix}`;
+      }
+
+      let addressName: string | undefined;
+      const hasAddress =
+        !!String(this.newCustomer.addressLine1 ?? '').trim() ||
+        !!String(this.newCustomer.city ?? '').trim();
+
+      if (hasAddress) {
+        const addrLine1 = String(this.newCustomer.addressLine1 ?? '').trim();
+        const city = String(this.newCustomer.city ?? '').trim();
+        if (!addrLine1 || !city) {
+          showToast({
+            type: 'warning',
+            message: 'Address needs Address Line 1 and City',
+          });
+          return;
+        }
+
+        addressName = `${partyName} - Address`;
+        if (await fyo.db.exists(ModelNameEnum.Address, addressName)) {
+          addressName = `${addressName} ${String(Date.now()).slice(-4)}`;
+        }
+
+        await fyo.doc
+          .getNewDoc(ModelNameEnum.Address, {
+            name: addressName,
+            addressLine1: addrLine1,
+            city,
+            country: 'India',
+            ...(this.newCustomer.state ? { state: this.newCustomer.state } : {}),
+            ...(this.newCustomer.postalCode
+              ? { postalCode: this.newCustomer.postalCode }
+              : {}),
+            ...(this.newCustomer.phone ? { phone: this.newCustomer.phone } : {}),
+          })
+          .sync();
+      }
+
+      const partyDoc = fyo.doc.getNewDoc(ModelNameEnum.Party, {
+        name: partyName,
+        role: 'Customer',
+        ...(this.newCustomer.phone ? { phone: this.newCustomer.phone } : {}),
+        ...(addressName ? { address: addressName } : {}),
+        ...(this.newCustomer.gstin ? { taxId: this.newCustomer.gstin } : {}),
+      });
+
+      // Best-effort: if a gstin field exists (custom field), set it too.
+      try {
+        await (partyDoc as any).set('gstin', this.newCustomer.gstin);
+      } catch {}
+
+      await partyDoc.sync();
+      showToast({ type: 'success', message: 'Customer added' });
+
+      this.showCustomerForm = false;
+      this.newCustomer = {
+        name: '',
+        phone: '',
+        gstin: '',
+        addressLine1: '',
+        city: '',
+        state: '',
+        postalCode: '',
+      };
+
+      await this.loadOptions();
+      this.draft.party = partyName;
     },
     async onItemSelected() {
       if (!this.draft.item) {
@@ -682,6 +905,15 @@ export default defineComponent({
         ...(this.draft.jewelryItem ? { jewelryItem: this.draft.jewelryItem } : {}),
         metalType: this.draft.metalType,
         purity: this.draft.purity,
+        ...(this.draft.metalType === 'Diamond' && this.draft.cut
+          ? { cut: this.draft.cut }
+          : {}),
+        ...(this.draft.metalType === 'Diamond' && this.draft.clarity
+          ? { clarity: this.draft.clarity }
+          : {}),
+        ...(this.draft.metalType === 'Diamond' && this.draft.color
+          ? { color: this.draft.color }
+          : {}),
         ...(this.draft.invoiceType === 'GST Invoice' && this.draft.hsnCode
           ? { hsnCode: this.draft.hsnCode }
           : {}),

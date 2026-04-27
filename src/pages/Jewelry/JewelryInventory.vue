@@ -1,7 +1,6 @@
 <template>
   <div class="flex flex-col h-full">
     <PageHeader title="Inventory">
-      <Button @click="openStockEntry">Stock Entry</Button>
       <Button @click="openStockLedger">Stock Movements</Button>
       <Button type="primary" @click="createJewelryItem">New Piece</Button>
     </PageHeader>
@@ -21,6 +20,23 @@
         </p>
         <p class="text-xl font-semibold">
           {{ summary.diamondStockCarats.toFixed(3) }}
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 px-4 pb-3">
+      <div class="rounded border p-3 dark:border-gray-800">
+        <p class="text-xs text-gray-600 dark:text-gray-300">Jewelry Purchases (30 days)</p>
+        <p class="text-xl font-semibold">{{ summary.jewelryPurchasesCount }}</p>
+        <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">
+          {{ formatCurrency(summary.jewelryPurchasesAmount) }}
+        </p>
+      </div>
+      <div class="rounded border p-3 dark:border-gray-800">
+        <p class="text-xs text-gray-600 dark:text-gray-300">Metal Purchases (30 days)</p>
+        <p class="text-xl font-semibold">{{ summary.metalPurchasesCount }}</p>
+        <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">
+          {{ formatCurrency(summary.metalPurchasesAmount) }}
         </p>
       </div>
     </div>
@@ -61,6 +77,7 @@
 
 <script lang="ts">
 import { ModelNameEnum } from 'models/types';
+import { getNumber } from 'models/inventory/jewelryCalculations';
 import Button from 'src/components/Button.vue';
 import PageHeader from 'src/components/PageHeader.vue';
 import { fyo } from 'src/initFyo';
@@ -87,6 +104,10 @@ export default defineComponent({
         totalPieces: 0,
         goldStockGrams: 0,
         diamondStockCarats: 0,
+        jewelryPurchasesCount: 0,
+        jewelryPurchasesAmount: 0,
+        metalPurchasesCount: 0,
+        metalPurchasesAmount: 0,
       },
     };
   },
@@ -94,6 +115,9 @@ export default defineComponent({
     await this.loadData();
   },
   methods: {
+    formatCurrency(value: number) {
+      return fyo.format(getNumber(value), 'Currency');
+    },
     async loadData() {
       this.rows = (await fyo.db.getAll(ModelNameEnum.JewelryItem, {
         fields: ['name', 'barcode', 'metalType', 'purity', 'weight', 'carat', 'status'],
@@ -109,9 +133,59 @@ export default defineComponent({
       this.summary.diamondStockCarats = this.rows
         .filter((row) => row.metalType === 'Diamond')
         .reduce((sum, row) => sum + Number(row.carat ?? 0), 0);
+
+      // Purchases summary (last 30 days) from stock ledger IN entries.
+      const since = new Date();
+      since.setDate(since.getDate() - 30);
+      const ledger = (await fyo.db.getAll(ModelNameEnum.JewelryStockLedger, {
+        fields: ['date', 'entryType', 'referenceType', 'referenceName', 'amount'],
+        orderBy: ['date', 'modified'],
+        order: 'desc',
+        limit: 5000,
+      })) as {
+        date?: string | Date;
+        entryType?: string;
+        referenceType?: string;
+        referenceName?: string;
+        amount?: unknown;
+      }[];
+
+      const isRecent = (value?: string | Date) => {
+        if (!value) return false;
+        const d = value instanceof Date ? value : new Date(value);
+        if (Number.isNaN(d.valueOf())) return false;
+        return d >= since;
+      };
+
+      const recentIn = ledger.filter(
+        (row) => row.entryType === 'IN' && isRecent(row.date)
+      );
+
+      const jewelryIn = recentIn.filter(
+        (row) => row.referenceType === ModelNameEnum.JewelryItem
+      );
+      const metalIn = recentIn.filter(
+        (row) => row.referenceType === ModelNameEnum.MetalPurchase
+      );
+
+      this.summary.jewelryPurchasesCount = jewelryIn.length;
+      this.summary.jewelryPurchasesAmount = jewelryIn.reduce(
+        (sum, row) => sum + getNumber(row.amount),
+        0
+      );
+      this.summary.metalPurchasesCount = metalIn.length;
+      this.summary.metalPurchasesAmount = metalIn.reduce(
+        (sum, row) => sum + getNumber(row.amount),
+        0
+      );
     },
     async createJewelryItem() {
-      const doc = fyo.doc.getNewDoc(ModelNameEnum.JewelryItem);
+      // Create and sync immediately so the user sees the final numeric ID
+      // (instead of a draft name like "New Jewelry Item 01").
+      const doc = fyo.doc.getNewDoc(ModelNameEnum.JewelryItem, {
+        numberSeries: 'JWL-',
+      });
+      await doc.sync();
       await routeTo(`/edit/${ModelNameEnum.JewelryItem}/${doc.name!}`);
     },
     async openJewelryItem(name: string) {
@@ -119,9 +193,6 @@ export default defineComponent({
     },
     async openStockLedger() {
       await routeTo('/list/JewelryStockLedger/Stock Movements');
-    },
-    async openStockEntry() {
-      await routeTo('/jewelry/stock-entry');
     },
   },
 });

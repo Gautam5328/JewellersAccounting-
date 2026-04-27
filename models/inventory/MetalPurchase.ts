@@ -5,7 +5,6 @@ import { getNumber } from './jewelryCalculations';
 
 export class MetalPurchase extends Doc {
   date?: Date;
-  supplier?: string;
   metalType?: 'Gold' | 'Silver' | 'Diamond';
   purity?: '9K' | '14K' | '18K' | '22K' | '24K';
   goldColor?: 'Yellow' | 'Rose' | 'White';
@@ -81,7 +80,7 @@ export class MetalPurchase extends Doc {
         amount: amount > 0 ? this.fyo.pesa(amount) : undefined,
         referenceType: this.schemaName,
         referenceName: this.name,
-        remarks: this.supplier,
+        remarks: this.buyerName || this.diamondQuality || this.remarks,
       })
       .sync();
   }
@@ -90,7 +89,6 @@ export class MetalPurchase extends Doc {
     return {
       columns: [
         'date',
-        'supplier',
         'metalType',
         'purity',
         'grams',

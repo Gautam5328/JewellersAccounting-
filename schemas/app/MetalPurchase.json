@@ -16,7 +16,8 @@
       "label": "Supplier",
       "fieldtype": "Link",
       "target": "Party",
-      "section": "Default"
+      "section": "Default",
+      "hidden": true
     },
     {
       "fieldname": "metalType",
@@ -168,7 +169,6 @@
   ],
   "quickEditFields": [
     "date",
-    "supplier",
     "metalType",
     "goldColor",
     "purity",
@@ -180,5 +180,5 @@
     "diamondSize",
     "totalCost"
   ],
-  "keywordFields": ["supplier", "metalType", "purity"]
+  "keywordFields": ["metalType", "purity"]
 }

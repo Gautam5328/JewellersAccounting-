@@ -68,11 +68,7 @@ function getInventorySidebar(): SidebarRoot[] {
           name: 'jewelry-inventory',
           route: '/jewelry/inventory',
         },
-        {
-          label: t`Stock Entry`,
-          name: 'inventory-stock-entry',
-          route: '/jewelry/stock-entry',
-        },
+        // Stock Entry is intentionally hidden for now (client wants simpler flow).
         {
           label: t`Metal Purchase`,
           name: 'inventory-metal-purchase',

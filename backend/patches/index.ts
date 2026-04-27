@@ -10,6 +10,8 @@ import fixItemHSNField from './fixItemHSNField';
 import createPaymentMethods from './createPaymentMethods';
 import seedJewelryCatalog from './seedJewelryCatalog';
 import seedJewelryCatalogV2 from './seedJewelryCatalogV2';
+import seedJewelryLocations from './seedJewelryLocations';
+import seedLooseMetalItems from './seedLooseMetalItems';
 
 export default [
   { name: 'testPatch', version: '0.5.0-beta.0', patch: testPatch },
@@ -59,5 +61,15 @@ export default [
     name: 'seedJewelryCatalogV2',
     version: '0.37.0',
     patch: seedJewelryCatalogV2,
+  },
+  {
+    name: 'seedJewelryLocations',
+    version: '0.37.0',
+    patch: seedJewelryLocations,
+  },
+  {
+    name: 'seedLooseMetalItems',
+    version: '0.37.0',
+    patch: seedLooseMetalItems,
   },
 ] as Patch[];

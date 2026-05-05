@@ -105,7 +105,7 @@ export async function getPrintTemplatePropValues(
     const items = Array.isArray((doc as any).items) ? ((doc as any).items as any[]) : [];
     const goldAmount = items.reduce((sum, row) => sum + (row?.goldValue?.float ?? 0), 0);
     const diamondAmount = items.reduce((sum, row) => sum + (row?.diamondValue?.float ?? 0), 0);
-    const makingAmount = items.reduce((sum, row) => sum + (row?.makingCharges?.float ?? 0), 0);
+    const makingAmount = items.reduce((sum, row) => sum + (row?.makingAmount?.float ?? 0), 0);
     const gemAmount = items.reduce((sum, row) => sum + (row?.gemAmount?.float ?? 0), 0);
     const certificationAmount = items.reduce(
       (sum, row) => sum + (row?.certificationAmount?.float ?? 0),

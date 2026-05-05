@@ -88,17 +88,21 @@ export class JewelryInvoice extends Doc {
         continue;
       }
 
+      if (row.metalType === 'Diamond') {
+        throw new Error('Diamond items are not supported in this invoice flow.');
+      }
+
       const gstPercent =
         invoiceType === 'Non-GST Invoice'
           ? 0
           : row.gstPercent === null || row.gstPercent === undefined
-            ? 3
+            ? 0
             : row.gstPercent;
       const makingGstPercent =
         invoiceType === 'Non-GST Invoice'
           ? 0
           : row.makingGstPercent === null || row.makingGstPercent === undefined
-            ? 5
+            ? 0
             : row.makingGstPercent;
 
       if (invoiceType === 'GST Invoice') {
@@ -117,10 +121,11 @@ export class JewelryInvoice extends Doc {
       const result = calculateJewelryLine({
         metalType: row.metalType,
         purity: row.purity,
+        grossWeight: (row as any).grossWeight,
+        diamondWeight: getNumber((row as any).diamondWeight),
         netWeight: row.netWeight,
         goldRate: getNumber(row.goldRate),
         metalAmount: getNumber((row as any).metalAmount),
-        wastagePercentage: row.wastagePercentage,
         makingCharges: getNumber(row.makingCharges),
         gemAmount: getNumber((row as any).gemAmount),
         certificationAmount: getNumber((row as any).certificationAmount),
@@ -139,7 +144,7 @@ export class JewelryInvoice extends Doc {
           : {}),
         goldValue: this.fyo.pesa(result.goldValue),
         diamondValue: this.fyo.pesa(result.diamondValue),
-        wastageAmount: this.fyo.pesa(result.wastageAmount),
+        makingAmount: this.fyo.pesa(result.makingAmount),
         lineAmount: this.fyo.pesa(result.lineAmount),
         lineGstAmount: this.fyo.pesa(result.lineGstAmount),
         totalAmount: this.fyo.pesa(result.totalAmount),

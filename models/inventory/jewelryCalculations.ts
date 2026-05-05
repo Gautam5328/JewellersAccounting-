@@ -8,10 +8,11 @@ export type JewelryPurity = '9K' | '14K' | '18K' | '22K' | '24K';
 export interface JewelryLineInput {
   metalType?: JewelryMetalType | string;
   purity?: JewelryPurity | string;
+  grossWeight?: number | null;
+  diamondWeight?: number | null;
   netWeight?: number | null;
   goldRate?: number | null;
   metalAmount?: number | null;
-  wastagePercentage?: number | null;
   makingCharges?: number | null;
   gemAmount?: number | null;
   certificationAmount?: number | null;
@@ -28,6 +29,7 @@ export interface JewelryLineResult {
   gemAmount: number;
   certificationAmount: number;
   wastageAmount: number;
+  makingAmount: number;
   lineAmount: number;
   lineGstAmount: number;
   totalAmount: number;
@@ -76,25 +78,33 @@ export function getNumber(value: unknown): number {
 
 export function calculateJewelryLine(input: JewelryLineInput): JewelryLineResult {
   const purityFactor = getPurityFactor(input.purity);
+  const grossWeight = getNumber(input.grossWeight);
+  const diamondWeight = getNumber(input.diamondWeight);
   const netWeight = getNumber(input.netWeight);
   const goldRate = getNumber(input.goldRate);
   const metalAmount = getNumber(input.metalAmount);
-  const wastagePercentage = getNumber(input.wastagePercentage);
-  const makingCharges = getNumber(input.makingCharges);
+  const makingChargePerGram = getNumber(input.makingCharges);
   const gemAmount = getNumber(input.gemAmount);
   const certificationAmount = getNumber(input.certificationAmount);
   const carat = getNumber(input.carat);
   const ratePerCarat = getNumber(input.ratePerCarat);
   const gstPercent =
     input.gstPercent === null || input.gstPercent === undefined
-      ? 3
+      ? 0
       : getNumber(input.gstPercent);
   const makingGstPercent =
     input.makingGstPercent === null || input.makingGstPercent === undefined
-      ? 5
+      ? 0
       : getNumber(input.makingGstPercent);
 
-  const computedGoldValue = netWeight * goldRate * purityFactor;
+  const computedNetWeight =
+    grossWeight > 0 || diamondWeight > 0
+      ? Math.max(0, grossWeight - diamondWeight)
+      : netWeight;
+
+  // New billing logic: metal value is netWeight * goldRate (no purityFactor).
+  // If "metalAmount" is explicitly provided (legacy jewellery cost), prefer it.
+  const computedGoldValue = computedNetWeight * goldRate;
   const goldValue =
     input.metalType === 'Diamond'
       ? 0
@@ -103,12 +113,11 @@ export function calculateJewelryLine(input: JewelryLineInput): JewelryLineResult
         : computedGoldValue;
   const diamondValue = carat * ratePerCarat;
   const materialValue = (goldValue || 0) + (diamondValue || 0) + (gemAmount || 0);
-  const wastageAmount = materialValue * (wastagePercentage / 100);
-  const lineAmount =
-    materialValue + wastageAmount + makingCharges + (certificationAmount || 0);
+  const wastageAmount = 0;
+  const makingCharges = computedNetWeight * makingChargePerGram;
+  const lineAmount = materialValue + makingCharges + (certificationAmount || 0);
   const lineGstAmount =
     materialValue * (gstPercent / 100) +
-    wastageAmount * (gstPercent / 100) +
     (makingCharges + (certificationAmount || 0)) * (makingGstPercent / 100);
 
   return {
@@ -118,6 +127,7 @@ export function calculateJewelryLine(input: JewelryLineInput): JewelryLineResult
     gemAmount,
     certificationAmount,
     wastageAmount,
+    makingAmount: makingCharges,
     lineAmount,
     lineGstAmount,
     totalAmount: lineAmount + lineGstAmount,

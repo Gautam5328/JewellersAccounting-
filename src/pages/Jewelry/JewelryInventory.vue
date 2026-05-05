@@ -41,7 +41,7 @@
       </div>
     </div>
 
-    <div class="px-4 pb-4 overflow-auto">
+    <div class="flex-1 overflow-y-auto px-4 pb-6">
       <table class="w-full text-sm border-collapse">
         <thead>
           <tr class="border-y dark:border-gray-800 text-left">
@@ -69,6 +69,55 @@
             <td class="py-2">{{ Number(row.carat ?? 0).toFixed(3) }}</td>
             <td class="py-2">{{ row.status }}</td>
           </tr>
+          <tr v-if="rows.length === 0" class="border-b dark:border-gray-800">
+            <td class="py-3 text-gray-600 dark:text-gray-300" colspan="7">
+              No pieces found.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="flex items-center justify-between mt-6 mb-2">
+        <p class="font-semibold">Metal Purchases</p>
+        <Button @click="openMetalPurchases">View All</Button>
+      </div>
+      <table class="w-full text-sm border-collapse">
+        <thead>
+          <tr class="border-y dark:border-gray-800 text-left">
+            <th class="py-2">Date</th>
+            <th class="py-2">Metal</th>
+            <th class="py-2">Purity</th>
+            <th class="py-2 text-right">Qty</th>
+            <th class="py-2 text-right">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="row in metalPurchases"
+            :key="row.name"
+            class="border-b dark:border-gray-800 cursor-pointer"
+            @click="openMetalPurchase(row.name)"
+          >
+            <td class="py-2">{{ formatDate(row.date) }}</td>
+            <td class="py-2">{{ row.metalType }}</td>
+            <td class="py-2">{{ row.purity }}</td>
+            <td class="py-2 text-right">
+              <span v-if="row.metalType === 'Diamond'">
+                {{ Number(row.carats ?? 0).toFixed(3) }} ct
+              </span>
+              <span v-else>
+                {{ Number(row.grams ?? 0).toFixed(3) }} g
+              </span>
+            </td>
+            <td class="py-2 text-right">
+              {{ formatCurrency(row.amount ?? row.totalCost) }}
+            </td>
+          </tr>
+          <tr v-if="metalPurchases.length === 0" class="border-b dark:border-gray-800">
+            <td class="py-3 text-gray-600 dark:text-gray-300" colspan="5">
+              No metal purchases found.
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -94,12 +143,24 @@ interface InventoryRow {
   status?: string;
 }
 
+interface MetalPurchaseRow {
+  name: string;
+  date?: string | Date;
+  metalType?: string;
+  purity?: string;
+  grams?: unknown;
+  carats?: unknown;
+  amount?: unknown;
+  totalCost?: unknown;
+}
+
 export default defineComponent({
   name: 'JewelryInventory',
   components: { PageHeader, Button },
   data() {
     return {
       rows: [] as InventoryRow[],
+      metalPurchases: [] as MetalPurchaseRow[],
       summary: {
         totalPieces: 0,
         goldStockGrams: 0,
@@ -118,6 +179,12 @@ export default defineComponent({
     formatCurrency(value: number) {
       return fyo.format(getNumber(value), 'Currency');
     },
+    formatDate(value?: string | Date) {
+      if (!value) return '';
+      const parsed = value instanceof Date ? value : new Date(value);
+      if (Number.isNaN(parsed.valueOf())) return '';
+      return parsed.toISOString().slice(0, 10);
+    },
     async loadData() {
       this.rows = (await fyo.db.getAll(ModelNameEnum.JewelryItem, {
         fields: ['name', 'barcode', 'metalType', 'purity', 'weight', 'carat', 'status'],
@@ -133,6 +200,27 @@ export default defineComponent({
       this.summary.diamondStockCarats = this.rows
         .filter((row) => row.metalType === 'Diamond')
         .reduce((sum, row) => sum + Number(row.carat ?? 0), 0);
+
+      // Recent metal purchases list
+      try {
+        this.metalPurchases = (await fyo.db.getAll(ModelNameEnum.MetalPurchase, {
+          fields: [
+            'name',
+            'date',
+            'metalType',
+            'purity',
+            'grams',
+            'carats',
+            'amount',
+            'totalCost',
+          ],
+          orderBy: ['date', 'modified'],
+          order: 'desc',
+          limit: 25,
+        })) as MetalPurchaseRow[];
+      } catch {
+        this.metalPurchases = [];
+      }
 
       // Purchases summary (last 30 days) from stock ledger IN entries.
       const since = new Date();
@@ -193,6 +281,12 @@ export default defineComponent({
     },
     async openStockLedger() {
       await routeTo('/list/JewelryStockLedger/Stock Movements');
+    },
+    async openMetalPurchases() {
+      await routeTo('/list/MetalPurchase/Metal Purchases');
+    },
+    async openMetalPurchase(name: string) {
+      await routeTo(`/edit/${ModelNameEnum.MetalPurchase}/${name}`);
     },
   },
 });

@@ -94,20 +94,20 @@
       "section": "Gold Details"
     },
     {
+      "fieldname": "diamondWeight",
+      "label": "Diamond Weight (g)",
+      "fieldtype": "Float",
+      "section": "Gold Details"
+    },
+    {
       "fieldname": "netWeight",
       "label": "Net Weight (g)",
       "fieldtype": "Float",
       "section": "Gold Details"
     },
     {
-      "fieldname": "wastagePercentage",
-      "label": "Wastage %",
-      "fieldtype": "Float",
-      "section": "Gold Details"
-    },
-    {
       "fieldname": "goldRate",
-      "label": "Gold price (₹/g)",
+      "label": "Gold Rate (₹/g)",
       "fieldtype": "Currency",
       "section": "Gold Details"
     },
@@ -132,15 +132,8 @@
       "section": "Totals"
     },
     {
-      "fieldname": "wastageAmount",
-      "label": "Wastage Amount",
-      "fieldtype": "Currency",
-      "readOnly": true,
-      "section": "Gold Details"
-    },
-    {
       "fieldname": "carat",
-      "label": "Carat",
+      "label": "Diamond Carats",
       "fieldtype": "Float",
       "section": "Diamond Details"
     },
@@ -180,7 +173,7 @@
     },
     {
       "fieldname": "ratePerCarat",
-      "label": "Per ct price",
+      "label": "Per Carat Rate",
       "fieldtype": "Currency",
       "section": "Diamond Details"
     },
@@ -205,8 +198,15 @@
     },
     {
       "fieldname": "makingCharges",
-      "label": "Making Charges",
+      "label": "Making Charge (₹/g)",
       "fieldtype": "Currency",
+      "section": "Totals"
+    },
+    {
+      "fieldname": "makingAmount",
+      "label": "Making Amount",
+      "fieldtype": "Currency",
+      "readOnly": true,
       "section": "Totals"
     },
     {
@@ -246,10 +246,10 @@
   "tableFields": [
     "item",
     "grossWeight",
+    "diamondWeight",
     "netWeight",
     "carat",
-    "metalAmount",
-    "ratePerCarat",
+    "goldRate",
     "lineAmount",
     "makingCharges",
     "totalAmount"

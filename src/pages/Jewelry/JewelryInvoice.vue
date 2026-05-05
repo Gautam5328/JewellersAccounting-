@@ -117,7 +117,6 @@
             >
               <option>Gold</option>
               <option>Silver</option>
-              <option>Diamond</option>
             </select>
           </div>
           <div>
@@ -128,17 +127,6 @@
               type="number"
               min="0"
               placeholder="Enter amount"
-            />
-          </div>
-          <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Discount</p>
-            <input
-              v-model.number="draft.discountAmount"
-              class="w-full px-2 py-1 border rounded bg-transparent"
-              type="number"
-              min="0"
-              step="0.01"
-              placeholder="Enter discount"
             />
           </div>
           <div>
@@ -171,17 +159,23 @@
               </option>
             </select>
           </div>
-          <div v-if="draft.metalType !== 'Diamond'">
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Purity</p>
-            <select v-model="draft.purity" class="w-full px-2 py-1 border rounded bg-transparent">
-              <option>9K</option>
-              <option>14K</option>
-              <option>18K</option>
-              <option>22K</option>
-              <option>24K</option>
-            </select>
+          <div>
+            <div v-if="draft.metalType === 'Gold'">
+              <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Purity</p>
+              <select
+                v-model="draft.purity"
+                class="w-full px-2 py-1 border rounded bg-transparent"
+              >
+                <option :value="null">Select purity</option>
+                <option>9K</option>
+                <option>14K</option>
+                <option>18K</option>
+                <option>22K</option>
+                <option>24K</option>
+              </select>
+            </div>
           </div>
-          <div v-if="draft.metalType !== 'Diamond'">
+          <div>
             <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Gross Weight (g)</p>
             <input
               v-model.number="draft.grossWeight"
@@ -192,48 +186,52 @@
               placeholder="Enter gross weight"
             />
           </div>
-          <div v-if="draft.metalType !== 'Diamond'">
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Net Weight (g)</p>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Diamond Weight (g)
+            </p>
             <input
-              v-model.number="draft.netWeight"
+              v-model.number="draft.diamondWeight"
               class="w-full px-2 py-1 border rounded bg-transparent"
               type="number"
               min="0"
               step="0.001"
-              placeholder="Enter net weight"
+              placeholder="Enter diamond weight"
             />
           </div>
-          <div v-if="draft.metalType !== 'Diamond'">
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Jewellery Cost</p>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Net Weight (g)</p>
             <input
-              v-model.number="draft.metalAmount"
+              :value="computedNetWeight.toFixed(3)"
+              class="w-full px-2 py-1 border rounded bg-transparent"
+              type="text"
+              readonly
+            />
+          </div>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              {{ draft.metalType }} Rate (₹/g)
+            </p>
+            <input
+              v-model.number="draft.goldRate"
               class="w-full px-2 py-1 border rounded bg-transparent"
               type="number"
               min="0"
               step="0.01"
-              placeholder="Enter jewellery cost"
+              placeholder="Enter rate"
             />
           </div>
           <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Wastage %</p>
-            <input
-              v-model.number="draft.wastagePercentage"
-              class="w-full px-2 py-1 border rounded bg-transparent"
-              type="number"
-              min="0"
-              step="0.01"
-              placeholder="Enter wastage %"
-            />
-          </div>
-          <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Making Charges</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Making Charge (₹/g)
+            </p>
             <input
               v-model.number="draft.makingCharges"
               class="w-full px-2 py-1 border rounded bg-transparent"
               type="number"
               min="0"
               step="0.01"
-              placeholder="Enter making charges"
+              placeholder="Enter making charge per gram"
             />
           </div>
           <div>
@@ -260,65 +258,38 @@
               placeholder="Certification amount"
             />
           </div>
-          <div v-if="draft.metalType === 'Diamond'">
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Carat</p>
+          <div class="col-span-2 pt-2">
+            <p class="text-sm font-semibold">Diamond</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Diamond Carats
+            </p>
             <input
               v-model.number="draft.carat"
               class="w-full px-2 py-1 border rounded bg-transparent"
               type="number"
               min="0"
-              step="0.01"
-              placeholder="Enter carat"
+              step="0.001"
+              placeholder="Enter diamond carats"
             />
           </div>
-          <div v-if="draft.metalType === 'Diamond'">
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Per ct price</p>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Per Carat Rate
+            </p>
             <input
               v-model.number="draft.ratePerCarat"
               class="w-full px-2 py-1 border rounded bg-transparent"
               type="number"
               min="0"
               step="0.01"
-              placeholder="Per ct price"
+              placeholder="₹ per carat"
             />
           </div>
-          <div v-if="draft.metalType === 'Diamond'">
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Diamond Type</p>
-            <select
-              v-model="draft.diamondOrigin"
-              class="w-full px-2 py-1 border rounded bg-transparent"
-            >
-              <option :value="null">Select type</option>
-              <option value="Natural">Natural</option>
-              <option value="Lab">Lab</option>
-            </select>
-          </div>
-          <div v-if="draft.metalType === 'Diamond'">
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Cut</p>
-            <input
-              v-model="draft.cut"
-              class="w-full px-2 py-1 border rounded bg-transparent"
-              type="text"
-              placeholder="Cut"
-            />
-          </div>
-          <div v-if="draft.metalType === 'Diamond'">
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Clarity</p>
-            <input
-              v-model="draft.clarity"
-              class="w-full px-2 py-1 border rounded bg-transparent"
-              type="text"
-              placeholder="Clarity"
-            />
-          </div>
-          <div v-if="draft.metalType === 'Diamond'">
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Color</p>
-            <input
-              v-model="draft.color"
-              class="w-full px-2 py-1 border rounded bg-transparent"
-              type="text"
-              placeholder="Color"
-            />
+          <!-- Diamond selling UI removed in simplified gold/silver invoice flow -->
+          <div class="col-span-2 pt-2">
+            <p class="text-sm font-semibold">Other</p>
           </div>
           <div v-if="draft.invoiceType === 'GST Invoice'">
             <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">HSN Code</p>
@@ -340,20 +311,29 @@
               placeholder="Enter GST %"
             />
           </div>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Discount</p>
+            <input
+              v-model.number="draft.discountAmount"
+              class="w-full px-2 py-1 border rounded bg-transparent"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="Enter discount"
+            />
+          </div>
         </div>
       </div>
 
       <div class="col-span-4 rounded border p-4 dark:border-gray-800">
         <p class="font-semibold mb-3">Live Totals</p>
         <p class="text-sm py-1">
-          {{ draft.metalType === 'Diamond' ? 'Metal Value' : 'Jewellery Cost' }}:
+          Gold Price:
           {{ formatCurrency(calculation.goldValue) }}
         </p>
+        <p class="text-sm py-1">Making Charges: {{ formatCurrency(makingAmount) }}</p>
         <p class="text-sm py-1">
           Diamond Value: {{ formatCurrency(calculation.diamondValue) }}
-        </p>
-        <p class="text-sm py-1">
-          Wastage Amount: {{ formatCurrency(calculation.wastageAmount) }}
         </p>
         <p class="text-sm py-1">Line Amount: {{ formatCurrency(calculation.lineAmount) }}</p>
         <p class="text-sm py-1">GST: {{ formatCurrency(calculation.lineGstAmount) }}</p>
@@ -403,7 +383,6 @@
 import { ModelNameEnum } from 'models/types';
 import {
   calculateJewelryLine,
-  getLatestDiamondRate,
   getNumber,
 } from 'models/inventory/jewelryCalculations';
 import Button from 'src/components/Button.vue';
@@ -434,9 +413,6 @@ interface JewelryPieceRow {
   grossWeight?: unknown;
   carat?: unknown;
   makingCharges?: unknown;
-  wastagePercentage?: unknown;
-  diamondOrigin?: string;
-  ratePerCarat?: unknown;
   gemAmount?: unknown;
   certificationAmount?: unknown;
   saleRate?: unknown;
@@ -453,21 +429,17 @@ export default defineComponent({
         item: null as string | null,
         jewelryItem: null as string | null,
         metalType: 'Gold',
-        purity: '22K',
+        purity: null as string | null,
         grossWeight: null as NullableNumber,
+        diamondWeight: null as NullableNumber,
         netWeight: null as NullableNumber,
         goldRate: null as NullableNumber,
-        wastagePercentage: null as NullableNumber,
         makingCharges: null as NullableNumber,
         metalAmount: null as NullableNumber,
         gemAmount: null as NullableNumber,
         certificationAmount: null as NullableNumber,
         carat: null as NullableNumber,
         ratePerCarat: null as NullableNumber,
-        diamondOrigin: null as string | null,
-        cut: '' as string,
-        clarity: '' as string,
-        color: '' as string,
         gstPercent: null as NullableNumber,
         makingGstPercent: null as NullableNumber,
         oldGoldExchangeAmount: null as NullableNumber,
@@ -499,6 +471,15 @@ export default defineComponent({
           : {}),
       };
       return calculateJewelryLine(input);
+    },
+    computedNetWeight(): number {
+      const gross = Number(this.draft.grossWeight ?? 0);
+      const dia = Number(this.draft.diamondWeight ?? 0);
+      return Math.max(0, gross - dia);
+    },
+    makingAmount(): number {
+      const rate = Number(this.draft.makingCharges ?? 0);
+      return this.computedNetWeight * rate;
     },
     filteredPieces(): JewelryPieceRow[] {
       const item = this.draft.item;
@@ -561,9 +542,6 @@ export default defineComponent({
                 'grossWeight',
                 'carat',
                 'makingCharges',
-                'wastagePercentage',
-                'diamondOrigin',
-                'ratePerCarat',
                 'gemAmount',
                 'certificationAmount',
                 'saleRate',
@@ -608,23 +586,15 @@ export default defineComponent({
       }
     },
     onMetalTypeChanged() {
-      const mt = this.draft.metalType;
-      // Reset fields not relevant to the selected metal type.
-      if (mt === 'Diamond') {
+      // Metal type is restricted to Gold/Silver for this invoice builder.
+      if (this.draft.metalType !== 'Gold' && this.draft.metalType !== 'Silver') {
+        this.draft.metalType = 'Gold';
+      }
+
+      if (this.draft.metalType === 'Silver') {
+        this.draft.purity = null;
+      } else if (!this.draft.purity) {
         this.draft.purity = '22K';
-        this.draft.grossWeight = null;
-        this.draft.netWeight = null;
-        this.draft.metalAmount = null;
-      } else {
-        if (!this.draft.purity) {
-          this.draft.purity = '22K';
-        }
-        this.draft.carat = null;
-        this.draft.ratePerCarat = null;
-        this.draft.diamondOrigin = null;
-        this.draft.cut = '';
-        this.draft.clarity = '';
-        this.draft.color = '';
       }
     },
     async createCustomerInline() {
@@ -718,9 +688,6 @@ export default defineComponent({
         'weight',
         'carat',
         'makingCharges',
-        'wastagePercentage',
-        'diamondOrigin',
-        'ratePerCarat',
         'gemAmount',
         'certificationAmount',
         'rate',
@@ -747,48 +714,34 @@ export default defineComponent({
       let weight = getNumber(itemData?.weight);
       const carat = getNumber(itemData?.carat);
       const makingCharges = getNumber(itemData?.makingCharges);
-      const wastagePercentage = getNumber(itemData?.wastagePercentage);
-      const diamondOrigin = (itemData?.diamondOrigin as string | undefined) ?? undefined;
-      const ratePerCarat = getNumber(itemData?.ratePerCarat);
       const gemAmount = getNumber(itemData?.gemAmount);
       const certificationAmount = getNumber(itemData?.certificationAmount);
       const itemRate = getNumber(itemData?.rate);
 
-      if (metalType) {
+      if (metalType === 'Gold' || metalType === 'Silver') {
         this.draft.metalType = metalType as any;
       }
-      if (purity) {
+      if (this.draft.metalType === 'Gold' && purity) {
         this.draft.purity = purity as any;
+      }
+      if (this.draft.metalType === 'Silver') {
+        this.draft.purity = null;
       }
 
       // Reset line fields so switching items always switches details
       this.draft.grossWeight = weight > 0 ? weight : null;
-      this.draft.netWeight = weight > 0 ? weight : null;
+      this.draft.diamondWeight = null;
+      this.draft.netWeight = null;
       this.draft.carat = carat > 0 ? carat : null;
       this.draft.makingCharges = makingCharges > 0 ? makingCharges : null;
-      this.draft.wastagePercentage = wastagePercentage > 0 ? wastagePercentage : null;
-      this.draft.diamondOrigin = diamondOrigin ?? null;
       this.draft.gemAmount = gemAmount > 0 ? gemAmount : null;
       this.draft.certificationAmount =
         certificationAmount > 0 ? certificationAmount : null;
-      this.draft.metalAmount = itemRate > 0 ? itemRate : null;
-      this.draft.goldRate = null;
-      this.draft.ratePerCarat = null;
+      this.draft.goldRate = itemRate > 0 ? itemRate : null;
+      this.draft.metalAmount = null;
+      // diamond pricing fields removed in this simplified flow
 
-      // We no longer auto-calculate jewellery cost from daily metal rates.
-      // If you want default costing, store it on Item.rate (shown as Jewellery Cost above).
-
-      if (this.draft.metalType === 'Diamond') {
-        const latestDiamondRate = await getLatestDiamondRate(fyo);
-        if (ratePerCarat > 0) {
-          this.draft.ratePerCarat = ratePerCarat;
-        } else if (latestDiamondRate !== undefined && latestDiamondRate > 0) {
-          this.draft.ratePerCarat = latestDiamondRate;
-        } else if (itemRate > 0) {
-          // Fallback if you store per-carat rate on Item.rate
-          this.draft.ratePerCarat = itemRate;
-        }
-      }
+      // Simplified flow: gold/silver only billing here.
 
       // If only one piece is in stock for this item, auto-select it.
       const availablePieces = this.jewelryPieces.filter(
@@ -831,37 +784,34 @@ export default defineComponent({
       const net = getNumber(piece.netWeight) || weight;
       const carat = getNumber(piece.carat);
       const makingCharges = getNumber(piece.makingCharges);
-      const wastagePercentage = getNumber(piece.wastagePercentage);
       const gemAmount = getNumber(piece.gemAmount);
       const certificationAmount = getNumber(piece.certificationAmount);
-      const ratePerCarat = getNumber(piece.ratePerCarat);
       const saleRate = getNumber(piece.saleRate);
 
-      if (metalType) this.draft.metalType = metalType as any;
-      if (purity) this.draft.purity = purity as any;
+      if (metalType === 'Gold' || metalType === 'Silver') {
+        this.draft.metalType = metalType as any;
+      }
+      if (this.draft.metalType === 'Gold' && purity) {
+        this.draft.purity = purity as any;
+      }
+      if (this.draft.metalType === 'Silver') {
+        this.draft.purity = null;
+      }
 
       this.draft.grossWeight = gross > 0 ? gross : null;
-      this.draft.netWeight = net > 0 ? net : null;
+      this.draft.diamondWeight = null;
+      this.draft.netWeight = null;
       this.draft.carat = carat > 0 ? carat : null;
       this.draft.makingCharges = makingCharges > 0 ? makingCharges : null;
-      this.draft.wastagePercentage = wastagePercentage > 0 ? wastagePercentage : null;
       this.draft.gemAmount = gemAmount > 0 ? gemAmount : null;
       this.draft.certificationAmount =
         certificationAmount > 0 ? certificationAmount : null;
-      this.draft.diamondOrigin = piece.diamondOrigin ?? this.draft.diamondOrigin;
-
-      // Prefer piece-specific rates if provided.
-      if (this.draft.metalType === 'Diamond') {
-        if (ratePerCarat > 0) {
-          this.draft.ratePerCarat = ratePerCarat;
-        } else if (saleRate > 0) {
-          this.draft.ratePerCarat = saleRate;
-        }
-      } else {
-        if (saleRate > 0) {
-          this.draft.metalAmount = saleRate;
-        }
+      // Prefer piece sale rate as gold/silver rate if provided.
+      if (saleRate > 0) {
+        this.draft.goldRate = saleRate;
       }
+      this.draft.metalAmount = null;
+      // diamond pricing fields removed in this simplified flow
     },
     async loadRecentInvoices() {
       this.recentInvoices = (await fyo.db.getAll(ModelNameEnum.JewelryInvoice, {
@@ -904,27 +854,16 @@ export default defineComponent({
         item: this.draft.item,
         ...(this.draft.jewelryItem ? { jewelryItem: this.draft.jewelryItem } : {}),
         metalType: this.draft.metalType,
-        purity: this.draft.purity,
-        ...(this.draft.metalType === 'Diamond' && this.draft.cut
-          ? { cut: this.draft.cut }
-          : {}),
-        ...(this.draft.metalType === 'Diamond' && this.draft.clarity
-          ? { clarity: this.draft.clarity }
-          : {}),
-        ...(this.draft.metalType === 'Diamond' && this.draft.color
-          ? { color: this.draft.color }
+        ...(this.draft.metalType === 'Gold' && this.draft.purity
+          ? { purity: this.draft.purity }
           : {}),
         ...(this.draft.invoiceType === 'GST Invoice' && this.draft.hsnCode
           ? { hsnCode: this.draft.hsnCode }
           : {}),
         ...(this.draft.grossWeight ? { grossWeight: this.draft.grossWeight } : {}),
-        ...(this.draft.netWeight ? { netWeight: this.draft.netWeight } : {}),
-        ...(this.draft.metalAmount
-          ? { metalAmount: fyo.pesa(this.draft.metalAmount) }
-          : {}),
-        ...(this.draft.wastagePercentage
-          ? { wastagePercentage: this.draft.wastagePercentage }
-          : {}),
+        ...(this.draft.diamondWeight ? { diamondWeight: this.draft.diamondWeight } : {}),
+        ...(this.computedNetWeight > 0 ? { netWeight: this.computedNetWeight } : {}),
+        ...(this.draft.goldRate ? { goldRate: fyo.pesa(this.draft.goldRate) } : {}),
         ...(this.draft.makingCharges
           ? { makingCharges: fyo.pesa(this.draft.makingCharges) }
           : {}),
@@ -935,9 +874,6 @@ export default defineComponent({
         ...(this.draft.carat ? { carat: this.draft.carat } : {}),
         ...(this.draft.ratePerCarat
           ? { ratePerCarat: fyo.pesa(this.draft.ratePerCarat) }
-          : {}),
-        ...(this.draft.diamondOrigin
-          ? { diamondOrigin: this.draft.diamondOrigin }
           : {}),
         ...(this.draft.invoiceType === 'GST Invoice' && this.draft.gstPercent
           ? { gstPercent: this.draft.gstPercent }

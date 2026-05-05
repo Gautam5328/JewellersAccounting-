@@ -17,10 +17,9 @@ export class JewelryInvoiceItem extends Doc {
   purity?: '9K' | '14K' | '18K' | '22K' | '24K';
   netWeight?: number;
   grossWeight?: number;
-  wastagePercentage?: number;
   goldRate?: Money;
   goldValue?: Money;
-  wastageAmount?: Money;
+  diamondWeight?: number;
   carat?: number;
   diamondOrigin?: 'Natural' | 'Lab';
   cut?: string;
@@ -31,6 +30,7 @@ export class JewelryInvoiceItem extends Doc {
   gemAmount?: Money;
   certificationAmount?: Money;
   makingCharges?: Money;
+  makingAmount?: Money;
   metalAmount?: Money;
   gstPercent?: number;
   makingGstPercent?: number;
@@ -68,10 +68,11 @@ export class JewelryInvoiceItem extends Doc {
         'jewelryItem',
         'metalType',
         'purity',
+        'grossWeight',
+        'diamondWeight',
         'netWeight',
         'goldRate',
         'metalAmount',
-        'wastagePercentage',
         'makingCharges',
         'carat',
         'ratePerCarat',
@@ -154,10 +155,10 @@ export class JewelryInvoiceItem extends Doc {
             ),
           }
         : {}),
-      ...(getNumber(this.metalAmount) || getNumber(data.rate)
+      ...(getNumber(this.goldRate) || getNumber(data.rate)
         ? {
-            metalAmount: this.fyo.pesa(
-              getNumber(this.metalAmount) || getNumber(data.rate)
+            goldRate: this.fyo.pesa(
+              getNumber(this.goldRate) || getNumber(data.rate)
             ),
           }
         : {}),
@@ -261,7 +262,7 @@ export class JewelryInvoiceItem extends Doc {
         }
       } else {
         if (saleRate > 0) {
-          await this.set('metalAmount', this.fyo.pesa(saleRate));
+          await this.set('goldRate', this.fyo.pesa(saleRate));
         }
       }
     } finally {
@@ -280,24 +281,25 @@ export class JewelryInvoiceItem extends Doc {
     const result = calculateJewelryLine({
       metalType: this.metalType,
       purity: this.purity,
+      grossWeight: (this as any).grossWeight,
+      diamondWeight: (this as any).diamondWeight,
       netWeight: this.netWeight,
       goldRate: getNumber(this.goldRate),
       metalAmount: getNumber(this.metalAmount),
-      wastagePercentage: this.wastagePercentage,
       makingCharges: getNumber(this.makingCharges),
       gemAmount: getNumber(this.gemAmount),
       certificationAmount: getNumber(this.certificationAmount),
       carat: this.carat,
       ratePerCarat: getNumber(this.ratePerCarat),
-      gstPercent: invoiceType === 'Non-GST Invoice' ? 0 : this.gstPercent ?? 3,
+      gstPercent: invoiceType === 'Non-GST Invoice' ? 0 : this.gstPercent ?? 0,
       makingGstPercent:
-        invoiceType === 'Non-GST Invoice' ? 0 : this.makingGstPercent ?? 5,
+        invoiceType === 'Non-GST Invoice' ? 0 : this.makingGstPercent ?? 0,
     });
 
     await this.set({
       goldValue: this.fyo.pesa(result.goldValue),
       diamondValue: this.fyo.pesa(result.diamondValue),
-      wastageAmount: this.fyo.pesa(result.wastageAmount),
+      makingAmount: this.fyo.pesa(result.makingAmount),
       lineAmount: this.fyo.pesa(result.lineAmount),
       lineGstAmount: this.fyo.pesa(result.lineGstAmount),
       totalAmount: this.fyo.pesa(result.totalAmount),

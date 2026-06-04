@@ -1,6 +1,7 @@
 import chokidar from 'chokidar';
 import esbuild from 'esbuild';
 import { $ } from 'execa';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getMainProcessCommonConfig } from './helpers.mjs';
@@ -25,6 +26,8 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(dirname, '..', '..');
 const $$ = $({ stdio: 'inherit' });
 let isReload = false;
+
+await ensureBetterSqlite3Binding(root);
 
 /**
  * @type {null | import('execa').ExecaChildProcess<string>}
@@ -139,4 +142,45 @@ function runElectron() {
   });
 
   return electronProcess;
+}
+
+async function ensureBetterSqlite3Binding(root) {
+  const bindingPath = path.join(
+    root,
+    'node_modules',
+    'better-sqlite3',
+    'build',
+    'Release',
+    'better_sqlite3.node'
+  );
+
+  if (fs.existsSync(bindingPath)) {
+    return;
+  }
+
+  // `better-sqlite3` is a native addon; Electron needs a binary built for its
+  // Node/ABI. If `postinstall` was skipped (or failed), dev mode will crash at
+  // first DB access with "Could not locate the bindings file".
+  console.log(
+    `missing native binding:\n\t${bindingPath}\nrebuilding better-sqlite3 for Electron...`
+  );
+
+  // Keep node-gyp/electron-gyp artifacts inside the repo so environments with
+  // restricted HOME (CI/sandbox) can still rebuild.
+  const gypHome = path.join(root, '.cache', 'electron-gyp-home');
+  fs.mkdirSync(gypHome, { recursive: true });
+  const npmConfigDevdir = path.join(gypHome, '.electron-gyp');
+
+  await $({
+    stdio: 'inherit',
+    env: {
+      ...process.env,
+      HOME: gypHome,
+      npm_config_devdir: npmConfigDevdir,
+    },
+  })`npx electron-rebuild --version 22.3.27 -f -w better-sqlite3`;
+
+  if (!fs.existsSync(bindingPath)) {
+    throw new Error(`better-sqlite3 binding still missing at: ${bindingPath}`);
+  }
 }

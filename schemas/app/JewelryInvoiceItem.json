@@ -91,25 +91,25 @@
       "fieldname": "grossWeight",
       "label": "Gross Weight (g)",
       "fieldtype": "Float",
-      "section": "Gold Details"
+      "section": "Metal Details"
     },
     {
       "fieldname": "diamondWeight",
       "label": "Diamond Weight (g)",
       "fieldtype": "Float",
-      "section": "Gold Details"
+      "section": "Metal Details"
     },
     {
       "fieldname": "netWeight",
       "label": "Net Weight (g)",
       "fieldtype": "Float",
-      "section": "Gold Details"
+      "section": "Metal Details"
     },
     {
       "fieldname": "goldRate",
-      "label": "Gold Rate (₹/g)",
+      "label": "Metal Rate (₹/g)",
       "fieldtype": "Currency",
-      "section": "Gold Details"
+      "section": "Metal Details"
     },
     {
       "fieldname": "metalAmount",
@@ -119,10 +119,10 @@
     },
     {
       "fieldname": "goldValue",
-      "label": "Gold Value",
+      "label": "Metal Value",
       "fieldtype": "Currency",
       "readOnly": true,
-      "section": "Gold Details"
+      "section": "Metal Details"
     },
     {
       "fieldname": "hsnCode",
@@ -185,10 +185,29 @@
       "section": "Diamond Details"
     },
     {
+      "fieldname": "colorStoneCarat",
+      "label": "Color Stone Weight (ct)",
+      "fieldtype": "Float",
+      "section": "Stone Details"
+    },
+    {
+      "fieldname": "colorStoneRatePerCarat",
+      "label": "Color Stone Rate / ct",
+      "fieldtype": "Currency",
+      "section": "Stone Details"
+    },
+    {
+      "fieldname": "colorStoneAmount",
+      "label": "Color Stone Amount",
+      "fieldtype": "Currency",
+      "readOnly": true,
+      "section": "Stone Details"
+    },
+    {
       "fieldname": "gemAmount",
       "label": "Gem Amount",
       "fieldtype": "Currency",
-      "section": "Diamond Details"
+      "section": "Stone Details"
     },
     {
       "fieldname": "certificationAmount",
@@ -249,6 +268,7 @@
     "diamondWeight",
     "netWeight",
     "carat",
+    "colorStoneCarat",
     "goldRate",
     "lineAmount",
     "makingCharges",

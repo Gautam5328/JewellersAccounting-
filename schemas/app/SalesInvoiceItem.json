@@ -77,12 +77,12 @@
     },
     {
       "fieldname": "goldRate",
-      "label": "Gold Rate (₹/g)",
+      "label": "Metal Rate (₹/g)",
       "fieldtype": "Currency"
     },
     {
       "fieldname": "goldValue",
-      "label": "Gold Value",
+      "label": "Metal Value",
       "fieldtype": "Currency",
       "readOnly": true
     },
@@ -129,6 +129,22 @@
       "readOnly": true
     },
     {
+      "fieldname": "colorStoneCarat",
+      "label": "Color Stone Weight (ct)",
+      "fieldtype": "Float"
+    },
+    {
+      "fieldname": "colorStoneRatePerCarat",
+      "label": "Color Stone Rate / ct",
+      "fieldtype": "Currency"
+    },
+    {
+      "fieldname": "colorStoneAmount",
+      "label": "Color Stone Amount",
+      "fieldtype": "Currency",
+      "readOnly": true
+    },
+    {
       "fieldname": "lineAmount",
       "label": "Line Amount",
       "fieldtype": "Currency",
@@ -163,6 +179,7 @@
     "purity",
     "netWeight",
     "carat",
+    "colorStoneCarat",
     "goldRate",
     "ratePerCarat",
     "makingCharges",
@@ -186,6 +203,8 @@
     "clarity",
     "color",
     "ratePerCarat",
+    "colorStoneCarat",
+    "colorStoneRatePerCarat",
     "gstPercent",
     "makingGstPercent",
     "lineAmount",

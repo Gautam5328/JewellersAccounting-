@@ -30,10 +30,15 @@ export class Item extends Doc {
   itemGroup?: string;
   hsnCode?: number;
   metalType?: 'Gold' | 'Silver' | 'Diamond';
-  purity?: '18K' | '22K' | '24K';
+  purity?: '9K' | '14K' | '18K' | '22K' | '24K';
   weight?: number;
   carat?: number;
   makingCharges?: Money;
+  ratePerCarat?: Money;
+  colorStoneCarat?: number;
+  colorStoneRatePerCarat?: Money;
+  gemAmount?: Money;
+  certificationAmount?: Money;
   hasSerialNumber?: boolean;
   serialNumberSeries?: string;
   datafromErp?: boolean;

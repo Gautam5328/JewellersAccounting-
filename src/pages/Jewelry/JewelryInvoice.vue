@@ -10,15 +10,25 @@
         <p class="font-semibold mb-3">Invoice</p>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Customer</p>
-            <select v-model="draft.party" class="w-full px-2 py-1 border rounded bg-transparent">
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Customer
+            </p>
+            <select
+              v-model="draft.party"
+              class="w-full px-2 py-1 border rounded bg-transparent"
+            >
               <option :value="null">Select Customer</option>
               <option v-for="party in parties" :key="party" :value="party">
                 {{ party }}
               </option>
             </select>
             <button
-              class="mt-2 text-xs text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-25"
+              class="
+                mt-2
+                text-xs text-gray-600
+                hover:text-gray-900
+                dark:text-gray-300 dark:hover:text-gray-25
+              "
               type="button"
               @click="showCustomerForm = !showCustomerForm"
             >
@@ -26,7 +36,9 @@
             </button>
           </div>
           <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Invoice Type</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Invoice Type
+            </p>
             <select
               v-model="draft.invoiceType"
               class="w-full px-2 py-1 border rounded bg-transparent"
@@ -36,11 +48,16 @@
             </select>
           </div>
 
-          <div v-if="showCustomerForm" class="col-span-2 rounded border p-3 dark:border-gray-800">
+          <div
+            v-if="showCustomerForm"
+            class="col-span-2 rounded border p-3 dark:border-gray-800"
+          >
             <p class="font-semibold text-sm mb-2">New Customer</p>
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Name</p>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+                  Name
+                </p>
                 <input
                   v-model="newCustomer.name"
                   class="w-full px-2 py-1 border rounded bg-transparent"
@@ -49,7 +66,9 @@
                 />
               </div>
               <div>
-                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Phone</p>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+                  Phone
+                </p>
                 <input
                   v-model="newCustomer.phone"
                   class="w-full px-2 py-1 border rounded bg-transparent"
@@ -58,7 +77,9 @@
                 />
               </div>
               <div>
-                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">GSTIN (optional)</p>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+                  GSTIN (optional)
+                </p>
                 <input
                   v-model="newCustomer.gstin"
                   class="w-full px-2 py-1 border rounded bg-transparent"
@@ -67,7 +88,9 @@
                 />
               </div>
               <div>
-                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Address Line 1</p>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+                  Address Line 1
+                </p>
                 <input
                   v-model="newCustomer.addressLine1"
                   class="w-full px-2 py-1 border rounded bg-transparent"
@@ -76,7 +99,9 @@
                 />
               </div>
               <div>
-                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">City</p>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+                  City
+                </p>
                 <input
                   v-model="newCustomer.city"
                   class="w-full px-2 py-1 border rounded bg-transparent"
@@ -85,7 +110,9 @@
                 />
               </div>
               <div>
-                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">State</p>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+                  State
+                </p>
                 <input
                   v-model="newCustomer.state"
                   class="w-full px-2 py-1 border rounded bg-transparent"
@@ -94,7 +121,9 @@
                 />
               </div>
               <div>
-                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">PIN Code</p>
+                <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+                  PIN Code
+                </p>
                 <input
                   v-model="newCustomer.postalCode"
                   class="w-full px-2 py-1 border rounded bg-transparent"
@@ -103,13 +132,17 @@
                 />
               </div>
               <div class="flex items-end justify-end">
-                <Button type="primary" @click="createCustomerInline">Save Customer</Button>
+                <Button type="primary" @click="createCustomerInline"
+                  >Save Customer</Button
+                >
               </div>
             </div>
           </div>
 
           <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Metal Type</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Metal Type
+            </p>
             <select
               v-model="draft.metalType"
               class="w-full px-2 py-1 border rounded bg-transparent"
@@ -120,7 +153,9 @@
             </select>
           </div>
           <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Old Gold Exchange Amount</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Old Gold Exchange Amount
+            </p>
             <input
               v-model.number="draft.oldGoldExchangeAmount"
               class="w-full px-2 py-1 border rounded bg-transparent"
@@ -143,7 +178,9 @@
             </select>
           </div>
           <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Piece (optional)</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Piece (optional)
+            </p>
             <select
               v-model="draft.jewelryItem"
               class="w-full px-2 py-1 border rounded bg-transparent"
@@ -161,7 +198,9 @@
           </div>
           <div>
             <div v-if="draft.metalType === 'Gold'">
-              <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Purity</p>
+              <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+                Purity
+              </p>
               <select
                 v-model="draft.purity"
                 class="w-full px-2 py-1 border rounded bg-transparent"
@@ -176,7 +215,9 @@
             </div>
           </div>
           <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Gross Weight (g)</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Gross Weight (g)
+            </p>
             <input
               v-model.number="draft.grossWeight"
               class="w-full px-2 py-1 border rounded bg-transparent"
@@ -200,7 +241,9 @@
             />
           </div>
           <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Net Weight (g)</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Net Weight (g)
+            </p>
             <input
               :value="computedNetWeight.toFixed(3)"
               class="w-full px-2 py-1 border rounded bg-transparent"
@@ -235,7 +278,9 @@
             />
           </div>
           <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Stone Charges</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Other Stone Charges
+            </p>
             <input
               v-model.number="draft.gemAmount"
               class="w-full px-2 py-1 border rounded bg-transparent"
@@ -287,12 +332,43 @@
               placeholder="₹ per carat"
             />
           </div>
+          <div class="col-span-2 pt-2">
+            <p class="text-sm font-semibold">Color Stone</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Color Stone Weight (ct)
+            </p>
+            <input
+              v-model.number="draft.colorStoneCarat"
+              class="w-full px-2 py-1 border rounded bg-transparent"
+              type="number"
+              min="0"
+              step="0.001"
+              placeholder="Enter color stone carats"
+            />
+          </div>
+          <div>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Color Stone Rate / ct
+            </p>
+            <input
+              v-model.number="draft.colorStoneRatePerCarat"
+              class="w-full px-2 py-1 border rounded bg-transparent"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="₹ per carat"
+            />
+          </div>
           <!-- Diamond selling UI removed in simplified gold/silver invoice flow -->
           <div class="col-span-2 pt-2">
             <p class="text-sm font-semibold">Other</p>
           </div>
           <div v-if="draft.invoiceType === 'GST Invoice'">
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">HSN Code</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              HSN Code
+            </p>
             <input
               v-model="draft.hsnCode"
               class="w-full px-2 py-1 border rounded bg-transparent"
@@ -301,7 +377,9 @@
             />
           </div>
           <div v-if="draft.invoiceType === 'GST Invoice'">
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">GST % (Metal)</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              GST % (Metal)
+            </p>
             <input
               v-model.number="draft.gstPercent"
               class="w-full px-2 py-1 border rounded bg-transparent"
@@ -312,7 +390,9 @@
             />
           </div>
           <div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">Discount</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+              Discount
+            </p>
             <input
               v-model.number="draft.discountAmount"
               class="w-full px-2 py-1 border rounded bg-transparent"
@@ -328,16 +408,46 @@
       <div class="col-span-4 rounded border p-4 dark:border-gray-800">
         <p class="font-semibold mb-3">Live Totals</p>
         <p class="text-sm py-1">
-          Gold Price:
+          {{ draft.metalType }} Price:
           {{ formatCurrency(calculation.goldValue) }}
         </p>
-        <p class="text-sm py-1">Making Charges: {{ formatCurrency(makingAmount) }}</p>
+        <p class="text-sm py-1">
+          Making Charges: {{ formatCurrency(makingAmount) }}
+        </p>
         <p class="text-sm py-1">
           Diamond Value: {{ formatCurrency(calculation.diamondValue) }}
         </p>
-        <p class="text-sm py-1">Line Amount: {{ formatCurrency(calculation.lineAmount) }}</p>
-        <p class="text-sm py-1">GST: {{ formatCurrency(calculation.lineGstAmount) }}</p>
-        <p class="text-base font-semibold py-2 border-t mt-3 dark:border-gray-800">
+        <p class="text-sm py-1">
+          Color Stone Amount: {{ formatCurrency(calculation.colorStoneAmount) }}
+        </p>
+        <p class="text-sm py-1">
+          Line Amount: {{ formatCurrency(calculation.lineAmount) }}
+        </p>
+        <p class="text-sm py-1">
+          GST: {{ formatCurrency(calculation.lineGstAmount) }}
+        </p>
+        <template
+          v-if="draft.invoiceType === 'GST Invoice' && draft.gstPercent"
+        >
+          <p class="text-sm py-1">
+            CGST ({{ formatPercent(gstSplitPercent) }}):
+            {{ formatCurrency(calculation.lineGstAmount / 2) }}
+          </p>
+          <p class="text-sm py-1">
+            SGST ({{ formatPercent(gstSplitPercent) }}):
+            {{ formatCurrency(calculation.lineGstAmount / 2) }}
+          </p>
+        </template>
+        <p
+          class="
+            text-base
+            font-semibold
+            py-2
+            border-t
+            mt-3
+            dark:border-gray-800
+          "
+        >
           Final Total:
           {{
             formatCurrency(
@@ -384,6 +494,7 @@ import { ModelNameEnum } from 'models/types';
 import {
   calculateJewelryLine,
   getNumber,
+  type JewelryLineInput,
 } from 'models/inventory/jewelryCalculations';
 import Button from 'src/components/Button.vue';
 import PageHeader from 'src/components/PageHeader.vue';
@@ -414,6 +525,8 @@ interface JewelryPieceRow {
   carat?: unknown;
   makingCharges?: unknown;
   gemAmount?: unknown;
+  colorStoneCarat?: unknown;
+  colorStoneRatePerCarat?: unknown;
   certificationAmount?: unknown;
   saleRate?: unknown;
 }
@@ -437,6 +550,8 @@ export default defineComponent({
         makingCharges: null as NullableNumber,
         metalAmount: null as NullableNumber,
         gemAmount: null as NullableNumber,
+        colorStoneCarat: null as NullableNumber,
+        colorStoneRatePerCarat: null as NullableNumber,
         certificationAmount: null as NullableNumber,
         carat: null as NullableNumber,
         ratePerCarat: null as NullableNumber,
@@ -464,7 +579,7 @@ export default defineComponent({
   },
   computed: {
     calculation() {
-      const input = {
+      const input: JewelryLineInput = {
         ...this.draft,
         ...(this.draft.invoiceType === 'Non-GST Invoice'
           ? { gstPercent: 0, makingGstPercent: 0 }
@@ -480,6 +595,10 @@ export default defineComponent({
     makingAmount(): number {
       const rate = Number(this.draft.makingCharges ?? 0);
       return this.computedNetWeight * rate;
+    },
+    gstSplitPercent(): number {
+      const percent = Number(this.draft.gstPercent ?? 0);
+      return Number.isFinite(percent) ? percent / 2 : 0;
     },
     filteredPieces(): JewelryPieceRow[] {
       const item = this.draft.item;
@@ -514,6 +633,15 @@ export default defineComponent({
     formatCurrency(value: unknown) {
       return fyo.format(getNumber(value), 'Currency');
     },
+    formatPercent(value: unknown) {
+      const num = Number(value);
+      if (!Number.isFinite(num)) {
+        return '0%';
+      }
+
+      const formatted = num.toFixed(2).replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1');
+      return `${formatted}%`;
+    },
     async loadOptions() {
       const parties = await fyo.db.getAll(ModelNameEnum.Party, {
         fields: ['name'],
@@ -543,6 +671,8 @@ export default defineComponent({
                 'carat',
                 'makingCharges',
                 'gemAmount',
+                'colorStoneCarat',
+                'colorStoneRatePerCarat',
                 'certificationAmount',
                 'saleRate',
               ],
@@ -575,7 +705,10 @@ export default defineComponent({
       ]);
 
       this.parties = parties.map((row) => row.name as string);
-      this.items = items.map((row) => row.name as string);
+      const hiddenLegacyItems = new Set(['Pendent Set', 'Pendant Set']);
+      this.items = items
+        .map((row) => row.name as string)
+        .filter((name) => !hiddenLegacyItems.has(name));
       this.jewelryPieces = pieces as JewelryPieceRow[];
       if (!this.draft.party && this.parties.length) {
         this.draft.party = this.parties[0];
@@ -689,6 +822,8 @@ export default defineComponent({
         'carat',
         'makingCharges',
         'gemAmount',
+        'colorStoneCarat',
+        'colorStoneRatePerCarat',
         'certificationAmount',
         'rate',
       ];
@@ -715,6 +850,8 @@ export default defineComponent({
       const carat = getNumber(itemData?.carat);
       const makingCharges = getNumber(itemData?.makingCharges);
       const gemAmount = getNumber(itemData?.gemAmount);
+      const colorStoneCarat = getNumber(itemData?.colorStoneCarat);
+      const colorStoneRatePerCarat = getNumber(itemData?.colorStoneRatePerCarat);
       const certificationAmount = getNumber(itemData?.certificationAmount);
       const itemRate = getNumber(itemData?.rate);
 
@@ -735,6 +872,9 @@ export default defineComponent({
       this.draft.carat = carat > 0 ? carat : null;
       this.draft.makingCharges = makingCharges > 0 ? makingCharges : null;
       this.draft.gemAmount = gemAmount > 0 ? gemAmount : null;
+      this.draft.colorStoneCarat = colorStoneCarat > 0 ? colorStoneCarat : null;
+      this.draft.colorStoneRatePerCarat =
+        colorStoneRatePerCarat > 0 ? colorStoneRatePerCarat : null;
       this.draft.certificationAmount =
         certificationAmount > 0 ? certificationAmount : null;
       this.draft.goldRate = itemRate > 0 ? itemRate : null;
@@ -750,7 +890,7 @@ export default defineComponent({
       );
       if (availablePieces.length === 1) {
         this.draft.jewelryItem = availablePieces[0].name;
-        await this.onJewelryItemSelected();
+        this.onJewelryItemSelected();
       }
     },
     pieceLabel(piece: JewelryPieceRow) {
@@ -759,7 +899,7 @@ export default defineComponent({
       if (piece.name) parts.push(piece.name);
       return parts.join(' - ');
     },
-    async onJewelryItemSelected() {
+    onJewelryItemSelected() {
       const name = this.draft.jewelryItem;
       if (!name) {
         return;
@@ -785,6 +925,8 @@ export default defineComponent({
       const carat = getNumber(piece.carat);
       const makingCharges = getNumber(piece.makingCharges);
       const gemAmount = getNumber(piece.gemAmount);
+      const colorStoneCarat = getNumber(piece.colorStoneCarat);
+      const colorStoneRatePerCarat = getNumber(piece.colorStoneRatePerCarat);
       const certificationAmount = getNumber(piece.certificationAmount);
       const saleRate = getNumber(piece.saleRate);
 
@@ -804,6 +946,9 @@ export default defineComponent({
       this.draft.carat = carat > 0 ? carat : null;
       this.draft.makingCharges = makingCharges > 0 ? makingCharges : null;
       this.draft.gemAmount = gemAmount > 0 ? gemAmount : null;
+      this.draft.colorStoneCarat = colorStoneCarat > 0 ? colorStoneCarat : null;
+      this.draft.colorStoneRatePerCarat =
+        colorStoneRatePerCarat > 0 ? colorStoneRatePerCarat : null;
       this.draft.certificationAmount =
         certificationAmount > 0 ? certificationAmount : null;
       // Prefer piece sale rate as gold/silver rate if provided.
@@ -868,6 +1013,16 @@ export default defineComponent({
           ? { makingCharges: fyo.pesa(this.draft.makingCharges) }
           : {}),
         ...(this.draft.gemAmount ? { gemAmount: fyo.pesa(this.draft.gemAmount) } : {}),
+        ...(this.draft.colorStoneCarat
+          ? { colorStoneCarat: this.draft.colorStoneCarat }
+          : {}),
+        ...(this.draft.colorStoneRatePerCarat
+          ? {
+              colorStoneRatePerCarat: fyo.pesa(
+                this.draft.colorStoneRatePerCarat
+              ),
+            }
+          : {}),
         ...(this.draft.certificationAmount
           ? { certificationAmount: fyo.pesa(this.draft.certificationAmount) }
           : {}),

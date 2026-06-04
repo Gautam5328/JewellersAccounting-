@@ -27,6 +27,9 @@ export class JewelryInvoiceItem extends Doc {
   color?: string;
   ratePerCarat?: Money;
   diamondValue?: Money;
+  colorStoneCarat?: number;
+  colorStoneRatePerCarat?: Money;
+  colorStoneAmount?: Money;
   gemAmount?: Money;
   certificationAmount?: Money;
   makingCharges?: Money;
@@ -76,6 +79,10 @@ export class JewelryInvoiceItem extends Doc {
         'makingCharges',
         'carat',
         'ratePerCarat',
+        'colorStoneCarat',
+        'colorStoneRatePerCarat',
+        'gemAmount',
+        'certificationAmount',
         'gstPercent',
         'makingGstPercent',
       ].includes(ch.changed)
@@ -101,6 +108,8 @@ export class JewelryInvoiceItem extends Doc {
         'wastagePercentage',
         'diamondOrigin',
         'ratePerCarat',
+        'colorStoneCarat',
+        'colorStoneRatePerCarat',
         'gemAmount',
         'certificationAmount',
         'rate',
@@ -144,6 +153,21 @@ export class JewelryInvoiceItem extends Doc {
         ? {
             gemAmount: this.fyo.pesa(
               getNumber(this.gemAmount) || getNumber(data.gemAmount)
+            ),
+          }
+        : {}),
+      ...(getNumber(this.colorStoneCarat) || getNumber(data.colorStoneCarat)
+        ? {
+            colorStoneCarat:
+              getNumber(this.colorStoneCarat) || getNumber(data.colorStoneCarat),
+          }
+        : {}),
+      ...(getNumber(this.colorStoneRatePerCarat) ||
+      getNumber(data.colorStoneRatePerCarat)
+        ? {
+            colorStoneRatePerCarat: this.fyo.pesa(
+              getNumber(this.colorStoneRatePerCarat) ||
+                getNumber(data.colorStoneRatePerCarat)
             ),
           }
         : {}),
@@ -203,6 +227,8 @@ export class JewelryInvoiceItem extends Doc {
         'wastagePercentage',
         'diamondOrigin',
         'ratePerCarat',
+        'colorStoneCarat',
+        'colorStoneRatePerCarat',
         'gemAmount',
         'certificationAmount',
         'saleRate',
@@ -232,6 +258,8 @@ export class JewelryInvoiceItem extends Doc {
     const makingCharges = getNumber(data?.makingCharges);
     const wastagePercentage = getNumber(data?.wastagePercentage);
     const gemAmount = getNumber(data?.gemAmount);
+    const colorStoneCarat = getNumber(data?.colorStoneCarat);
+    const colorStoneRatePerCarat = getNumber(data?.colorStoneRatePerCarat);
     const certificationAmount = getNumber(data?.certificationAmount);
     const saleRate = getNumber(data?.saleRate);
     const pieceRatePerCarat = getNumber(data?.ratePerCarat);
@@ -249,6 +277,10 @@ export class JewelryInvoiceItem extends Doc {
         ...(makingCharges > 0 ? { makingCharges: this.fyo.pesa(makingCharges) } : {}),
         ...(wastagePercentage > 0 ? { wastagePercentage } : {}),
         ...(data?.diamondOrigin ? { diamondOrigin: data.diamondOrigin as string } : {}),
+        ...(colorStoneCarat > 0 ? { colorStoneCarat } : {}),
+        ...(colorStoneRatePerCarat > 0
+          ? { colorStoneRatePerCarat: this.fyo.pesa(colorStoneRatePerCarat) }
+          : {}),
         ...(gemAmount > 0 ? { gemAmount: this.fyo.pesa(gemAmount) } : {}),
         ...(certificationAmount > 0
           ? { certificationAmount: this.fyo.pesa(certificationAmount) }
@@ -288,6 +320,8 @@ export class JewelryInvoiceItem extends Doc {
       metalAmount: getNumber(this.metalAmount),
       makingCharges: getNumber(this.makingCharges),
       gemAmount: getNumber(this.gemAmount),
+      colorStoneCarat: this.colorStoneCarat,
+      colorStoneRatePerCarat: getNumber(this.colorStoneRatePerCarat),
       certificationAmount: getNumber(this.certificationAmount),
       carat: this.carat,
       ratePerCarat: getNumber(this.ratePerCarat),
@@ -299,6 +333,7 @@ export class JewelryInvoiceItem extends Doc {
     await this.set({
       goldValue: this.fyo.pesa(result.goldValue),
       diamondValue: this.fyo.pesa(result.diamondValue),
+      colorStoneAmount: this.fyo.pesa(result.colorStoneAmount),
       makingAmount: this.fyo.pesa(result.makingAmount),
       lineAmount: this.fyo.pesa(result.lineAmount),
       lineGstAmount: this.fyo.pesa(result.lineGstAmount),

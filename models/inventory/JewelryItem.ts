@@ -19,6 +19,8 @@ export class JewelryItem extends Doc {
   makingCharges?: Money;
   wastagePercentage?: number;
   ratePerCarat?: Money;
+  colorStoneCarat?: number;
+  colorStoneRatePerCarat?: Money;
   gemAmount?: Money;
   certificationAmount?: Money;
   purchaseRate?: Money;

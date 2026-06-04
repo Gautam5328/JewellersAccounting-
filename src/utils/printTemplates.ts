@@ -102,11 +102,29 @@ export async function getPrintTemplatePropValues(
     const subtotal = (doc as any).subtotal as Money | undefined;
     const gstAmount = (doc as any).gstAmount as Money | undefined;
     const discountAmount = (doc as any).discountAmount as Money | undefined;
-    const items = Array.isArray((doc as any).items) ? ((doc as any).items as any[]) : [];
-    const goldAmount = items.reduce((sum, row) => sum + (row?.goldValue?.float ?? 0), 0);
-    const diamondAmount = items.reduce((sum, row) => sum + (row?.diamondValue?.float ?? 0), 0);
-    const makingAmount = items.reduce((sum, row) => sum + (row?.makingAmount?.float ?? 0), 0);
-    const gemAmount = items.reduce((sum, row) => sum + (row?.gemAmount?.float ?? 0), 0);
+    const items = Array.isArray((doc as any).items)
+      ? ((doc as any).items as any[])
+      : [];
+    const goldAmount = items.reduce(
+      (sum, row) => sum + (row?.goldValue?.float ?? 0),
+      0
+    );
+    const diamondAmount = items.reduce(
+      (sum, row) => sum + (row?.diamondValue?.float ?? 0),
+      0
+    );
+    const makingAmount = items.reduce(
+      (sum, row) => sum + (row?.makingAmount?.float ?? 0),
+      0
+    );
+    const colorStoneAmount = items.reduce(
+      (sum, row) => sum + (row?.colorStoneAmount?.float ?? 0),
+      0
+    );
+    const gemAmount = items.reduce(
+      (sum, row) => sum + (row?.gemAmount?.float ?? 0),
+      0
+    );
     const certificationAmount = items.reduce(
       (sum, row) => sum + (row?.certificationAmount?.float ?? 0),
       0
@@ -122,10 +140,26 @@ export async function getPrintTemplatePropValues(
       ModelNameEnum.Currency
     );
     (values.doc as PrintTemplateData).discountValue = discountValue;
-    (values.doc as PrintTemplateData).goldAmount = doc.fyo.format(goldAmount, ModelNameEnum.Currency);
-    (values.doc as PrintTemplateData).diamondAmount = doc.fyo.format(diamondAmount, ModelNameEnum.Currency);
-    (values.doc as PrintTemplateData).makingAmount = doc.fyo.format(makingAmount, ModelNameEnum.Currency);
-    (values.doc as PrintTemplateData).gemAmount = doc.fyo.format(gemAmount, ModelNameEnum.Currency);
+    (values.doc as PrintTemplateData).goldAmount = doc.fyo.format(
+      goldAmount,
+      ModelNameEnum.Currency
+    );
+    (values.doc as PrintTemplateData).diamondAmount = doc.fyo.format(
+      diamondAmount,
+      ModelNameEnum.Currency
+    );
+    (values.doc as PrintTemplateData).makingAmount = doc.fyo.format(
+      makingAmount,
+      ModelNameEnum.Currency
+    );
+    (values.doc as PrintTemplateData).colorStoneAmount = doc.fyo.format(
+      colorStoneAmount,
+      ModelNameEnum.Currency
+    );
+    (values.doc as PrintTemplateData).gemAmount = doc.fyo.format(
+      gemAmount,
+      ModelNameEnum.Currency
+    );
     (values.doc as PrintTemplateData).certificationAmount = doc.fyo.format(
       certificationAmount,
       ModelNameEnum.Currency
@@ -139,6 +173,23 @@ export async function getPrintTemplatePropValues(
     if (invoiceType === 'Non-GST Invoice') {
       (values.doc as PrintTemplateData).taxes = [];
     } else {
+      const itemGstPercents = items
+        .map((row) => Number(row?.gstPercent ?? 0))
+        .filter((percent) => Number.isFinite(percent) && percent > 0);
+      const gstPercent =
+        (Number((doc as any).gstPercent ?? 0) || itemGstPercents[0]) ?? 0;
+      const percentLabel = (percent: number) => {
+        if (!Number.isFinite(percent) || percent <= 0) {
+          return '';
+        }
+
+        const formatted = percent
+          .toFixed(2)
+          .replace(/\.0+$/, '')
+          .replace(/(\.\d*?)0+$/, '$1');
+        return ` (${formatted}%)`;
+      };
+
       // Split GST into CGST/SGST for intra-state, IGST otherwise.
       let inState = true;
       try {
@@ -147,7 +198,10 @@ export async function getPrintTemplatePropValues(
           'gstin'
         )) as string | null;
         const partyName = (doc as any).party as string;
-        const party = (await fyo.doc.getDoc(ModelNameEnum.Party, partyName)) as any;
+        const party = (await fyo.doc.getDoc(
+          ModelNameEnum.Party,
+          partyName
+        )) as any;
 
         let place = '';
         if (party?.address) {
@@ -172,12 +226,21 @@ export async function getPrintTemplatePropValues(
       const gst = (gstAmount?.float ?? 0) as number;
       if (inState) {
         (values.doc as PrintTemplateData).taxes = [
-          { account: 'CGST', amount: doc.fyo.format(gst / 2, ModelNameEnum.Currency) },
-          { account: 'SGST', amount: doc.fyo.format(gst / 2, ModelNameEnum.Currency) },
+          {
+            account: `CGST${percentLabel(gstPercent / 2)}`,
+            amount: doc.fyo.format(gst / 2, ModelNameEnum.Currency),
+          },
+          {
+            account: `SGST${percentLabel(gstPercent / 2)}`,
+            amount: doc.fyo.format(gst / 2, ModelNameEnum.Currency),
+          },
         ];
       } else {
         (values.doc as PrintTemplateData).taxes = [
-          { account: 'IGST', amount: doc.fyo.format(gst, ModelNameEnum.Currency) },
+          {
+            account: 'IGST',
+            amount: doc.fyo.format(gst, ModelNameEnum.Currency),
+          },
         ];
       }
     }

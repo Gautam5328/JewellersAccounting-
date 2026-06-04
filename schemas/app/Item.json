@@ -278,6 +278,18 @@
       "section": "Jewelry"
     },
     {
+      "fieldname": "colorStoneCarat",
+      "label": "Color Stone Weight (ct)",
+      "fieldtype": "Float",
+      "section": "Jewelry"
+    },
+    {
+      "fieldname": "colorStoneRatePerCarat",
+      "label": "Color Stone Rate / ct",
+      "fieldtype": "Currency",
+      "section": "Jewelry"
+    },
+    {
       "fieldname": "gemAmount",
       "label": "Stone Charges",
       "fieldtype": "Currency",
@@ -315,6 +327,8 @@
     "wastagePercentage",
     "diamondOrigin",
     "ratePerCarat",
+    "colorStoneCarat",
+    "colorStoneRatePerCarat",
     "gemAmount",
     "certificationAmount"
   ],

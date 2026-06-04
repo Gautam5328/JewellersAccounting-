@@ -11,7 +11,8 @@ async function execute(dm: DatabaseManager) {
     'Necklace',
     'Bracelet',
     'Bangle',
-    'Pendant Set',
+    'Pendant',
+    'Tanmaniya',
   ];
 
   for (const name of names) {
@@ -32,4 +33,3 @@ async function execute(dm: DatabaseManager) {
 }
 
 export default { execute };
-

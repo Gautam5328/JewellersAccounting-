@@ -183,6 +183,18 @@
       "section": "Pricing"
     },
     {
+      "fieldname": "colorStoneCarat",
+      "label": "Color Stone Weight (ct)",
+      "fieldtype": "Float",
+      "section": "Stone Details"
+    },
+    {
+      "fieldname": "colorStoneRatePerCarat",
+      "label": "Color Stone Rate / ct",
+      "fieldtype": "Currency",
+      "section": "Stone Details"
+    },
+    {
       "fieldname": "gemAmount",
       "label": "Stone Charges",
       "fieldtype": "Currency",
@@ -249,6 +261,8 @@
     "weight",
     "carat",
     "makingCharges",
+    "colorStoneCarat",
+    "colorStoneRatePerCarat",
     "gemAmount",
     "certificationAmount",
     "status"

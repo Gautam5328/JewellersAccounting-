@@ -13,8 +13,11 @@ export interface JewelryLineInput {
   netWeight?: number | null;
   goldRate?: number | null;
   metalAmount?: number | null;
+  wastagePercentage?: number | null;
   makingCharges?: number | null;
   gemAmount?: number | null;
+  colorStoneCarat?: number | null;
+  colorStoneRatePerCarat?: number | null;
   certificationAmount?: number | null;
   carat?: number | null;
   ratePerCarat?: number | null;
@@ -27,6 +30,7 @@ export interface JewelryLineResult {
   goldValue: number;
   diamondValue: number;
   gemAmount: number;
+  colorStoneAmount: number;
   certificationAmount: number;
   wastageAmount: number;
   makingAmount: number;
@@ -85,6 +89,8 @@ export function calculateJewelryLine(input: JewelryLineInput): JewelryLineResult
   const metalAmount = getNumber(input.metalAmount);
   const makingChargePerGram = getNumber(input.makingCharges);
   const gemAmount = getNumber(input.gemAmount);
+  const colorStoneCarat = getNumber(input.colorStoneCarat);
+  const colorStoneRatePerCarat = getNumber(input.colorStoneRatePerCarat);
   const certificationAmount = getNumber(input.certificationAmount);
   const carat = getNumber(input.carat);
   const ratePerCarat = getNumber(input.ratePerCarat);
@@ -112,7 +118,12 @@ export function calculateJewelryLine(input: JewelryLineInput): JewelryLineResult
         ? metalAmount
         : computedGoldValue;
   const diamondValue = carat * ratePerCarat;
-  const materialValue = (goldValue || 0) + (diamondValue || 0) + (gemAmount || 0);
+  const colorStoneAmount = colorStoneCarat * colorStoneRatePerCarat;
+  const materialValue =
+    (goldValue || 0) +
+    (diamondValue || 0) +
+    (colorStoneAmount || 0) +
+    (gemAmount || 0);
   const wastageAmount = 0;
   const makingCharges = computedNetWeight * makingChargePerGram;
   const lineAmount = materialValue + makingCharges + (certificationAmount || 0);
@@ -125,6 +136,7 @@ export function calculateJewelryLine(input: JewelryLineInput): JewelryLineResult
     goldValue,
     diamondValue,
     gemAmount,
+    colorStoneAmount,
     certificationAmount,
     wastageAmount,
     makingAmount: makingCharges,

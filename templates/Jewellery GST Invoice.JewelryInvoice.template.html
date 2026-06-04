@@ -57,8 +57,8 @@
       <div class="py-3 text-right w-2/12">Gross (g)</div>
       <div class="py-3 text-right w-2/12">Diamond (g)</div>
       <div class="py-3 text-right w-2/12">Net (g)</div>
-      <div class="py-3 text-right w-2/12">Gold Rate</div>
-      <div class="py-3 text-right w-2/12">Gold Price</div>
+      <div class="py-3 text-right w-2/12">Metal Rate</div>
+      <div class="py-3 text-right w-2/12">Metal Price</div>
       <div class="py-3 text-right w-2/12">Making</div>
     </section>
 
@@ -75,6 +75,7 @@
           <span v-if="row.goldColor"> · {{ row.goldColor }}</span>
           <span v-if="row.purity"> · {{ row.purity }}</span>
           <span v-if="row.carat"> · Dia: {{ row.carat }} ct</span>
+          <span v-if="row.colorStoneCarat"> · Stone: {{ row.colorStoneCarat }} ct</span>
         </div>
       </div>
       <div class="w-2/12 py-2">{{ row.hsnCode }}</div>
@@ -108,7 +109,7 @@
 
     <section class="w-1/2">
       <div class="flex pl-2 justify-between py-3 border-b">
-        <h3>Gold Amount</h3>
+        <h3>Metal Amount</h3>
         <p>{{ doc.goldAmount }}</p>
       </div>
       <div class="flex pl-2 justify-between py-3 border-b">
@@ -116,7 +117,11 @@
         <p>{{ doc.diamondAmount }}</p>
       </div>
       <div class="flex pl-2 justify-between py-3 border-b">
-        <h3>Stone/Gem Amount</h3>
+        <h3>Color Stone Amount</h3>
+        <p>{{ doc.colorStoneAmount }}</p>
+      </div>
+      <div class="flex pl-2 justify-between py-3 border-b">
+        <h3>Other Stone Charges</h3>
         <p>{{ doc.gemAmount }}</p>
       </div>
       <div class="flex pl-2 justify-between py-3 border-b">

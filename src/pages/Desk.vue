@@ -9,7 +9,7 @@ import { toggleSidebar } from 'src/utils/ui';
       <Sidebar
         v-show="showSidebar"
         class="
-          flex-shrink-0
+          overflow-y-auto
           border-e
           dark:border-gray-800
           whitespace-nowrap
@@ -23,7 +23,7 @@ import { toggleSidebar } from 'src/utils/ui';
     <div
       class="
         flex flex-1
-        overflow-y-hidden
+        overflow-y-auto
         custom-scroll custom-scroll-thumb1
         bg-white
         dark:bg-gray-875
@@ -35,7 +35,7 @@ import { toggleSidebar } from 'src/utils/ui';
             :is="Component"
             :key="$route.path"
             :dark-mode="darkMode"
-            class="flex-1"
+            class="flex-1 min-h-0"
           />
         </keep-alive>
       </router-view>

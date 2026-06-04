@@ -10,7 +10,7 @@ import { InvoiceItem } from '../InvoiceItem/InvoiceItem';
 
 export class SalesInvoiceItem extends InvoiceItem {
   metalType?: 'Gold' | 'Silver' | 'Diamond';
-  purity?: '18K' | '22K' | '24K';
+  purity?: '9K' | '14K' | '18K' | '22K' | '24K';
   grossWeight?: number;
   netWeight?: number;
   wastagePercentage?: number;
@@ -24,6 +24,9 @@ export class SalesInvoiceItem extends InvoiceItem {
   color?: string;
   ratePerCarat?: import('pesa').Money;
   diamondValue?: import('pesa').Money;
+  colorStoneCarat?: number;
+  colorStoneRatePerCarat?: import('pesa').Money;
+  colorStoneAmount?: import('pesa').Money;
   lineAmount?: import('pesa').Money;
   lineGstAmount?: import('pesa').Money;
   totalAmount?: import('pesa').Money;
@@ -51,6 +54,8 @@ export class SalesInvoiceItem extends InvoiceItem {
         'clarity',
         'color',
         'ratePerCarat',
+        'colorStoneCarat',
+        'colorStoneRatePerCarat',
         'gstPercent',
         'makingGstPercent',
       ].includes(ch.changed)
@@ -60,20 +65,46 @@ export class SalesInvoiceItem extends InvoiceItem {
   }
 
   private async hydrateJewelryDefaults() {
-    const itemData = await this.fyo.db.get(
-      ModelNameEnum.Item,
-      this.item as string,
-      ['metalType', 'purity', 'weight', 'carat', 'makingCharges']
-    );
+    let itemData: any;
+    try {
+      itemData = await this.fyo.db.get(ModelNameEnum.Item, this.item as string, [
+        'metalType',
+        'purity',
+        'weight',
+        'carat',
+        'makingCharges',
+        'colorStoneCarat',
+        'colorStoneRatePerCarat',
+      ]);
+    } catch {
+      itemData = await this.fyo.db.get(ModelNameEnum.Item, this.item as string, [
+        'metalType',
+        'purity',
+        'weight',
+        'carat',
+        'makingCharges',
+      ]);
+    }
 
     await this.set({
       metalType: this.metalType ?? (itemData.metalType as string),
       purity: this.purity ?? (itemData.purity as string),
       netWeight: (this.netWeight ?? getNumber(itemData.weight)) as number,
       carat: (this.carat ?? getNumber(itemData.carat)) as number,
+      colorStoneCarat: (this.colorStoneCarat ??
+        getNumber(itemData.colorStoneCarat)) as number,
       makingCharges: this.fyo.pesa(
         getNumber(this.makingCharges) || getNumber(itemData.makingCharges)
       ),
+      ...(getNumber(this.colorStoneRatePerCarat) ||
+      getNumber(itemData.colorStoneRatePerCarat)
+        ? {
+            colorStoneRatePerCarat: this.fyo.pesa(
+              getNumber(this.colorStoneRatePerCarat) ||
+                getNumber(itemData.colorStoneRatePerCarat)
+            ),
+          }
+        : {}),
     });
 
     if (!this.goldRate?.float && this.purity) {
@@ -110,6 +141,8 @@ export class SalesInvoiceItem extends InvoiceItem {
       makingCharges: getNumber(this.makingCharges),
       carat: this.carat,
       ratePerCarat: getNumber(this.ratePerCarat),
+      colorStoneCarat: this.colorStoneCarat,
+      colorStoneRatePerCarat: getNumber(this.colorStoneRatePerCarat),
       gstPercent: this.gstPercent ?? 3,
       makingGstPercent: this.makingGstPercent ?? 5,
     });
@@ -117,6 +150,7 @@ export class SalesInvoiceItem extends InvoiceItem {
     await this.set({
       goldValue: this.fyo.pesa(result.goldValue),
       diamondValue: this.fyo.pesa(result.diamondValue),
+      colorStoneAmount: this.fyo.pesa(result.colorStoneAmount),
       wastageAmount: this.fyo.pesa(result.wastageAmount),
       lineAmount: this.fyo.pesa(result.lineAmount),
       lineGstAmount: this.fyo.pesa(result.lineGstAmount),

@@ -14,6 +14,7 @@ export class JewelryStockLedger extends Doc {
   carat?: number;
   rate?: Money;
   amount?: Money;
+  buyerName?: string;
   referenceType?: string;
   referenceName?: string;
   referenceLine?: string;
@@ -49,7 +50,7 @@ export class JewelryStockLedger extends Doc {
         'carat',
         'rate',
         'amount',
-        'referenceName',
+        'buyerName',
       ],
     };
   }

@@ -121,6 +121,12 @@
       "section": "Details"
     },
     {
+      "fieldname": "buyerName",
+      "label": "Buyer Name",
+      "fieldtype": "Data",
+      "section": "Details"
+    },
+    {
       "fieldname": "referenceType",
       "label": "Reference Type",
       "fieldtype": "Data",

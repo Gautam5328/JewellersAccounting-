@@ -26,6 +26,7 @@ export class JewelryItem extends Doc {
   purchaseRate?: Money;
   saleRate?: Money;
   status?: string;
+  buyerName?: string;
 
   validations: ValidationMap = {
     grossWeight: (value: DocValue) => {
@@ -134,6 +135,7 @@ export class JewelryItem extends Doc {
         ...(metalType === 'Diamond' ? { carat: qty } : { weight: qty }),
         ...(rate > 0 ? { rate: this.fyo.pesa(rate) } : {}),
         ...(amount > 0 ? { amount: this.fyo.pesa(amount) } : {}),
+        ...(this.buyerName ? { buyerName: this.buyerName } : {}),
         referenceType: this.schemaName,
         referenceName: this.name,
         remarks: 'Piece added',

@@ -213,6 +213,12 @@
       "section": "Pricing"
     },
     {
+      "fieldname": "buyerName",
+      "label": "Buyer Name",
+      "fieldtype": "Data",
+      "section": "Inventory"
+    },
+    {
       "fieldname": "saleRate",
       "label": "Sale Rate",
       "fieldtype": "Currency",
